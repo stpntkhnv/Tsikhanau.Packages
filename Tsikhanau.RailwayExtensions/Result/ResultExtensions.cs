@@ -1,7 +1,6 @@
-using Tsikhanau.Outcomes;
 using Tsikhanau.Outcomes.Result;
 
-namespace Tsikhanau.RailwayExtensions;
+namespace Tsikhanau.RailwayExtensions.Result;
 
 public static class ResultExtensions
 {

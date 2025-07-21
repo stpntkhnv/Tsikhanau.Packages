@@ -1,8 +1,9 @@
 using System.Linq.Expressions;
 using Tsikhanau.Foundation.General;
+using Tsikhanau.Outcomes;
 using Tsikhanau.Outcomes.Result;
 
-namespace Tsikhanau.Outcomes.Validation;
+namespace Tsikhanau.Validation;
 
 public sealed class PropertyValidator<T, TProperty>
 {

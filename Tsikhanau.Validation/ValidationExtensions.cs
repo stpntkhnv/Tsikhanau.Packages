@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Tsikhanau.Outcomes.Validation;
+namespace Tsikhanau.Validation;
 
 public static class ValidationExtensions
 {

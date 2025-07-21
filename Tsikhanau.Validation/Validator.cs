@@ -1,9 +1,10 @@
 using System.Linq.Expressions;
 using Tsikhanau.Foundation.General;
 using Tsikhanau.Foundation.Validation;
+using Tsikhanau.Outcomes;
 using Tsikhanau.Outcomes.Result;
 
-namespace Tsikhanau.Outcomes.Validation;
+namespace Tsikhanau.Validation;
 
 public sealed class Validator<T>
 {

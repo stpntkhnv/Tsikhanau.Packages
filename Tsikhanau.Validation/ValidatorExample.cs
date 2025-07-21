@@ -1,7 +1,8 @@
 using Tsikhanau.Foundation.General;
+using Tsikhanau.Outcomes;
 using Tsikhanau.Outcomes.Result;
 
-namespace Tsikhanau.Outcomes.Validation;
+namespace Tsikhanau.Validation;
 
 public class User
 {
