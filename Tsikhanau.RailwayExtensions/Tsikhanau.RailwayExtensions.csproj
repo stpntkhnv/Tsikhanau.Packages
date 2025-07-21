@@ -7,12 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Either\" />
-      <Folder Include="Optional\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Tsikhanau.Foundation\Tsikhanau.Foundation.csproj" />
+        <ProjectReference Include="..\Tsikhanau.Foundation\Tsikhanau.Foundation.csproj" />
+        <ProjectReference Include="..\Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj" />
     </ItemGroup>
 
 </Project>
