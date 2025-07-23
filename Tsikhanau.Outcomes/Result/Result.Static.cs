@@ -1,4 +1,5 @@
 using Tsikhanau.Foundation.General;
+using Tsikhanau.Outcomes.Errors;
 
 namespace Tsikhanau.Outcomes.Result;
 

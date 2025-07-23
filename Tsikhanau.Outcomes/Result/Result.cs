@@ -1,8 +1,11 @@
+using System.Diagnostics;
 using Tsikhanau.Foundation.Validation;
 
 namespace Tsikhanau.Outcomes.Result;
 
 public readonly struct Result<TData, TError> : IEquatable<Result<TData, TError>>
+    where TData : notnull
+    where TError : notnull
 {
     private readonly TData? _data;
     private readonly TError? _error;
@@ -33,7 +36,11 @@ public readonly struct Result<TData, TError> : IEquatable<Result<TData, TError>>
         ? _error! 
         : throw new InvalidOperationException("Cannot access Error on a successful result.");
 
-    public static Result<TData, TError> Success(TData value) => new(value);
+    public static Result<TData, TError> Success(TData value)
+    {
+        Guard.AgainstNull(value);
+        return new Result<TData, TError>(value);
+    }
 
     public static Result<TData, TError> Failure(TError error)
     {
@@ -66,6 +73,9 @@ public readonly struct Result<TData, TError> : IEquatable<Result<TData, TError>>
     public override String ToString() => IsSuccess 
         ? $"Success({_data})" 
         : $"Failure({_error})";
+    
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
+    private String DebuggerDisplay => ToString();
 
     public static Boolean operator ==(Result<TData, TError> left, Result<TData, TError> right) => left.Equals(right);
 
@@ -74,4 +84,6 @@ public readonly struct Result<TData, TError> : IEquatable<Result<TData, TError>>
     public static implicit operator Result<TData, TError>(TData value) => Success(value);
 
     public static implicit operator Result<TData, TError>(TError error) => Failure(error);
+    
+    public static implicit operator Boolean(Result<TData, TError> r) => r.IsSuccess;
 }
