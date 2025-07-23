@@ -9,6 +9,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj" />
+      <ProjectReference Include="..\Tsikhanau.Flow\Tsikhanau.Flow.csproj" />
+      <ProjectReference Include="..\Tsikhanau.Packages.ValueObjects\Tsikhanau.Packages.ValueObjects.csproj" />
+      <ProjectReference Include="..\Tsikhanau.RailwayExtensions\Tsikhanau.RailwayExtensions.csproj" />
+      <ProjectReference Include="..\Tsikhanau.Validation\Tsikhanau.Validation.csproj" />
     </ItemGroup>
+
 
 </Project>

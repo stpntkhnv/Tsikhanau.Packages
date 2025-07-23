@@ -7,9 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tsikhanau.Foundation\Tsikhanau.Foundation.csproj" />
+      <Folder Include="Collection\" />
+      <Folder Include="Integer\" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj" />
-      <ProjectReference Include="..\Tsikhanau.Packages.ValueObjects\Tsikhanau.Packages.ValueObjects.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,13 +1,10 @@
-using System.Diagnostics.CodeAnalysis;
-using Tsikhanau.Foundation;
-using Tsikhanau.Foundation.General;
 using Tsikhanau.Foundation.Validation;
 
-namespace Tsikhanau.Outcomes;
+namespace Tsikhanau.Outcomes.Errors;
 
-public sealed class Error : ValueObject, IEquatable<Error>
+public class Error : IEquatable<Error>
 {
-    private Error(String code, String message, Error? innerError = null)
+    protected Error(String code, String message, Error? innerError = null)
     {
         Code = code;
         Message = message;
@@ -102,16 +99,6 @@ public sealed class Error : ValueObject, IEquatable<Error>
     public override Boolean Equals(Object? obj) => obj is Error other && Equals(other);
 
     public override Int32 GetHashCode() => HashCode.Combine(Code, Message, InnerError);
-
-    protected override IEnumerable<Object> GetAtomicValues()
-    {
-        yield return Code;
-        yield return Message;
-        if (InnerError != null)
-        {
-            yield return InnerError;
-        }
-    }
 
     public override String ToString() =>
         InnerError == null 

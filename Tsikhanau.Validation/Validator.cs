@@ -1,64 +1,19 @@
-using System.Linq.Expressions;
-using Tsikhanau.Foundation.General;
 using Tsikhanau.Foundation.Validation;
-using Tsikhanau.Outcomes;
-using Tsikhanau.Outcomes.Result;
 
 namespace Tsikhanau.Validation;
 
 public sealed class Validator<T>
 {
-    private readonly T _instance;
-    private readonly List<Func<T, Result<Unit, Error>>> _rules;
-
-    private Validator(T instance)
+    private readonly T Data;
+    
+    private Validator(T data)
     {
-        _instance = instance;
-        _rules = [];
+        Data = data;
     }
 
-    public static Validator<T> For(T instance)
+    public static Validator<T> ForObject(T data)
     {
-        Guard.AgainstNull(instance);
-        return new Validator<T>(instance);
-    }
-
-    public PropertyValidator<T, TProperty> Rule<TProperty>(Expression<Func<T, TProperty>> propertySelector)
-    {
-        Guard.AgainstNull(propertySelector);
-        return new PropertyValidator<T, TProperty>(this, propertySelector);
-    }
-
-    internal Validator<T> AddRule(Func<T, Result<Unit, Error>> rule)
-    {
-        _rules.Add(rule);
-        return this;
-    }
-
-    public Result<Unit, Error> Validate()
-    {
-        foreach (var rule in _rules)
-        {
-            var result = rule(_instance);
-            if (result.IsFailure)
-            {
-                return result.Error;
-            }
-        }
-
-        return Unit.Value;
-    }
-
-    public Result<Unit, Error[]> ValidateAll()
-    {
-        var errors = _rules
-            .Select(rule => rule(_instance))
-            .Where(result => result.IsFailure)
-            .Select(result => result.Error)
-            .ToList();
-
-        return errors.Count == 0 
-            ? Unit.Value 
-            : errors.ToArray();
+        Guard.AgainstNull(data);
+        return new Validator<T>(data);
     }
 }

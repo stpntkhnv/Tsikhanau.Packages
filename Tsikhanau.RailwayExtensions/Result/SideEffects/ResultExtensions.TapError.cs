@@ -1,0 +1,18 @@
+using Tsikhanau.Outcomes.Result;
+
+namespace Tsikhanau.RailwayExtensions.Result.SideEffects;
+
+public static partial class ResultExtensions
+{
+    public static Result<TData, TError> TapError<TData, TError>(
+        this Result<TData, TError> result,
+        Action<TError> action)
+    {
+        if (result.IsFailure)
+        {
+            action(result.Error);
+        }
+        
+        return result;
+    }
+}

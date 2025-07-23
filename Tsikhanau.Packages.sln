@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+#
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Outcomes", "Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj", "{BA3E2047-237E-4BED-8981-4A4A553F9DAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Foundation", "Tsikhanau.Foundation\Tsikhanau.Foundation.csproj", "{9A32EABF-E345-4E99-8CEB-16E04DB22F6C}"
@@ -9,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.RailwayExtensions", "Tsikhanau.RailwayExtensions\Tsikhanau.RailwayExtensions.csproj", "{B1EDF5E5-9907-487E-AB07-572D2C8D7BAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Validation", "Tsikhanau.Validation\Tsikhanau.Validation.csproj", "{9BDC8DD5-6AFF-49BE-8169-57D07F36873F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Flow", "Tsikhanau.Flow\Tsikhanau.Flow.csproj", "{35286125-0641-4BFB-9C2C-68A770E72CBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Packages.ValueObjects", "Tsikhanau.Packages.ValueObjects\Tsikhanau.Packages.ValueObjects.csproj", "{11D676D8-6760-4B87-82B5-920E0846165D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +41,13 @@ Global
 		{9BDC8DD5-6AFF-49BE-8169-57D07F36873F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BDC8DD5-6AFF-49BE-8169-57D07F36873F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BDC8DD5-6AFF-49BE-8169-57D07F36873F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35286125-0641-4BFB-9C2C-68A770E72CBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35286125-0641-4BFB-9C2C-68A770E72CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35286125-0641-4BFB-9C2C-68A770E72CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35286125-0641-4BFB-9C2C-68A770E72CBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11D676D8-6760-4B87-82B5-920E0846165D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11D676D8-6760-4B87-82B5-920E0846165D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11D676D8-6760-4B87-82B5-920E0846165D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11D676D8-6760-4B87-82B5-920E0846165D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
