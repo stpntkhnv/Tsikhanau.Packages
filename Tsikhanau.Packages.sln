@@ -1,21 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-#
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Outcomes", "Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj", "{BA3E2047-237E-4BED-8981-4A4A553F9DAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Foundation", "Tsikhanau.Foundation\Tsikhanau.Foundation.csproj", "{9A32EABF-E345-4E99-8CEB-16E04DB22F6C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{EDFA05E6-0D10-425C-92A7-A678BD2D862D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.RailwayExtensions", "Tsikhanau.RailwayExtensions\Tsikhanau.RailwayExtensions.csproj", "{B1EDF5E5-9907-487E-AB07-572D2C8D7BAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Validation", "Tsikhanau.Validation\Tsikhanau.Validation.csproj", "{9BDC8DD5-6AFF-49BE-8169-57D07F36873F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Flow", "Tsikhanau.Flow\Tsikhanau.Flow.csproj", "{35286125-0641-4BFB-9C2C-68A770E72CBD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.ValueObjects", "Tsikhanau.ValueObjects\Tsikhanau.ValueObjects.csproj", "{11D676D8-6760-4B87-82B5-920E0846165D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Guards", "Tsikhanau.Guards\Tsikhanau.Guards.csproj", "{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Http", "Tsikhanau.Http\Tsikhanau.Http.csproj", "{97D2B9B5-6F64-4592-AE7C-B6460236E4DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{9A32EABF-E345-4E99-8CEB-16E04DB22F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A32EABF-E345-4E99-8CEB-16E04DB22F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A32EABF-E345-4E99-8CEB-16E04DB22F6C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDFA05E6-0D10-425C-92A7-A678BD2D862D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDFA05E6-0D10-425C-92A7-A678BD2D862D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDFA05E6-0D10-425C-92A7-A678BD2D862D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDFA05E6-0D10-425C-92A7-A678BD2D862D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B1EDF5E5-9907-487E-AB07-572D2C8D7BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1EDF5E5-9907-487E-AB07-572D2C8D7BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1EDF5E5-9907-487E-AB07-572D2C8D7BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,10 +37,6 @@ Global
 		{9BDC8DD5-6AFF-49BE-8169-57D07F36873F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BDC8DD5-6AFF-49BE-8169-57D07F36873F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BDC8DD5-6AFF-49BE-8169-57D07F36873F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35286125-0641-4BFB-9C2C-68A770E72CBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35286125-0641-4BFB-9C2C-68A770E72CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35286125-0641-4BFB-9C2C-68A770E72CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35286125-0641-4BFB-9C2C-68A770E72CBD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{11D676D8-6760-4B87-82B5-920E0846165D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{11D676D8-6760-4B87-82B5-920E0846165D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D676D8-6760-4B87-82B5-920E0846165D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,5 +45,9 @@ Global
 		{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97D2B9B5-6F64-4592-AE7C-B6460236E4DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97D2B9B5-6F64-4592-AE7C-B6460236E4DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97D2B9B5-6F64-4592-AE7C-B6460236E4DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97D2B9B5-6F64-4592-AE7C-B6460236E4DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

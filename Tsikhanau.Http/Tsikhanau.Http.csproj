@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <PackageId>Tsikhanau.Http</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>Stsiapan Tsikhanau</Authors>
+        <Description>Functional HTTP client library with Result-based error handling for .NET</Description>
+        <IncludeBuildOutput>true</IncludeBuildOutput>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/stpntkhnv/Tsikhanau.Packages</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/stpntkhnv/Tsikhanau.Packages</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>http;httpclient;functional-programming;result;error-handling;csharp;dotnet</PackageTags>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <PackageReleaseNotes>Initial release with functional HTTP client wrapper</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj" />
+      <ProjectReference Include="..\Tsikhanau.Foundation\Tsikhanau.Foundation.csproj" />
+    </ItemGroup>
+
+</Project>
