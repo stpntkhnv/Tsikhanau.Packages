@@ -4,12 +4,25 @@
         <PackageId>Tsikhanau.RailwayExtensions</PackageId>
         <Version>1.0.0</Version>
         <Authors>Stsiapan Tsikhanau</Authors>
-        <Description>Core building blocks</Description>
+        <Description>Railway-oriented programming extensions for Result type - Bind, Map, Combine, Tap, and async operations</Description>
         <IncludeBuildOutput>true</IncludeBuildOutput>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/stpntkhnv/Tsikhanau.Packages</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/stpntkhnv/Tsikhanau.Packages</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>functional-programming;railway-oriented;result;extensions;bind;map;csharp;dotnet</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <PackageReleaseNotes>Initial release with Bind, Map, Combine, Ensure, Tap, and full async support</PackageReleaseNotes>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Tsikhanau.Foundation\Tsikhanau.Foundation.csproj" />

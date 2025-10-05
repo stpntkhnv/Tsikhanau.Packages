@@ -4,12 +4,25 @@
         <PackageId>Tsikhanau.Outcomes</PackageId>
         <Version>1.0.1</Version>
         <Authors>Stsiapan Tsikhanau</Authors>
-        <Description>Core building blocks</Description>
+        <Description>Result and Error types for railway-oriented programming in .NET - functional error handling without exceptions</Description>
         <IncludeBuildOutput>true</IncludeBuildOutput>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/stpntkhnv/Tsikhanau.Packages</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/stpntkhnv/Tsikhanau.Packages</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>functional-programming;railway-oriented;result;error-handling;csharp;dotnet</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <PackageReleaseNotes>Initial release with Result&lt;TData, TError&gt; and Error types</PackageReleaseNotes>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Either\" />
