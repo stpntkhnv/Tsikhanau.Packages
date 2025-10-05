@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <PackageId>Tsikhanau.Outcomes</PackageId>
+        <Version>1.0.1</Version>
+        <Authors>Stsiapan Tsikhanau</Authors>
+        <Description>Core building blocks</Description>
+        <IncludeBuildOutput>true</IncludeBuildOutput>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>

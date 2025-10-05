@@ -2,7 +2,9 @@ using Tsikhanau.Foundation.General;
 using Tsikhanau.Foundation.Validation;
 using Tsikhanau.Outcomes.Errors;
 using Tsikhanau.Outcomes.Result;
+using Tsikhanau.Packages.ValueObjects.String;
 using Tsikhanau.Validation.Abstractions;
+using Tsikhanau.Validation.Builders;
 
 namespace Tsikhanau.Validation;
 
@@ -18,12 +20,17 @@ public class ValidationTemplate<TObject>
         _objectRules = objectRules;
     }
 
-    public static ValidationTemplate<TObject> Create(
+    public static ValidationTemplateBuilder<TObject> Create()
+    {
+        return ValidationTemplateBuilder<TObject>.New();
+    }
+
+    internal static ValidationTemplate<TObject> CreateInternal(
         List<IFieldValidator<TObject>> fieldValidators,
         List<ValidationRule<TObject>> objectRules)
     {
-        Guard.AgainstNullOrEmpty(fieldValidators);
-        Guard.AgainstNullOrEmpty(objectRules);
+        Guard.AgainstNull(fieldValidators);
+        Guard.AgainstNull(objectRules);
         
         return new ValidationTemplate<TObject>(fieldValidators, objectRules);
     }

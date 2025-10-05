@@ -7,56 +7,63 @@ public class FieldValidatorBuilder<TObject, TField>
 {
     private readonly ValidationTemplateBuilder<TObject> _parent;
     private readonly Func<TObject, TField> _accessor;
-    private NotEmptyString _fieldName;
+    private readonly NotEmptyString _fieldName;
     private readonly List<ValidationRule<TField>> _rules = [];
 
-    private FieldValidatorBuilder(ValidationTemplateBuilder<TObject> parent, Func<TObject, TField> accessor)
+    private FieldValidatorBuilder(ValidationTemplateBuilder<TObject> parent, Func<TObject, TField> accessor, NotEmptyString fieldName)
     {
         _parent = parent;
         _accessor = accessor;
+        _fieldName = fieldName;
     }
 
-    public static FieldValidatorBuilder<TObject, TField> New(
+    internal static FieldValidatorBuilder<TObject, TField> New(
         ValidationTemplateBuilder<TObject> parent,
-        Func<TObject, TField> accessor)
+        Func<TObject, TField> accessor,
+        string fieldName)
     {
         Guard.AgainstNull(parent);
         Guard.AgainstNull(accessor);
-        return new FieldValidatorBuilder<TObject, TField>(parent, accessor);
-    }
-
-    public FieldValidatorBuilder<TObject, TField> WithFieldName(NotEmptyString fieldName)
-    {
-        _fieldName = fieldName;
-        return this;
-    }
-    
-    public FieldValidatorBuilder<TObject, TField> WithFieldName(string fieldName)
-    {
         Guard.AgainstNullOrWhiteSpace(fieldName);
-        _fieldName = NotEmptyString.FromString(fieldName).Value;
-        return this;
+        
+        var notEmptyFieldName = NotEmptyString.FromString(fieldName).Value;
+        return new FieldValidatorBuilder<TObject, TField>(parent, accessor, notEmptyFieldName);
     }
     
-    public FieldValidatorBuilder<TObject, TField> AddRule(Func<TField, Boolean> rule, String message)
+    public FieldValidatorBuilder<TObject, TField> Must(Func<TField, bool> rule, string message)
     {
         Guard.AgainstNull(rule);
-        Guard.AgainstNullOrEmpty(message);
+        Guard.AgainstNullOrWhiteSpace(message);
         
         var msg = NotEmptyString.FromString(message).Value;
         _rules.Add(ValidationRule<TField>.WithMessage(rule, msg));
         return this;
     }
 
-    public ValidationTemplateBuilder<TObject> Build()
+    public FieldValidatorBuilder<TObject, TField2> Field<TField2>(Func<TObject, TField2> fieldAccessor, string fieldName)
     {
-        Guard.AgainstNull(_accessor, nameof(_accessor));
-        Guard.AgainstNull(_fieldName, nameof(_fieldName));
-        Guard.AgainstNullOrEmpty(_rules, nameof(_rules));
-        
-        var fieldValidator = FieldValidator<TObject, TField>.Create(_accessor, _fieldName, _rules);
-        _parent.AddFieldValidator(fieldValidator);
-
-        return _parent;
+        FinalizeCurrentField();
+        return _parent.Field(fieldAccessor, fieldName);
+    }
+    
+    public ValidationTemplateObjectBuilder<TObject> Object()
+    {
+        FinalizeCurrentField();
+        return _parent.Object();
+    }
+    
+    public ValidationTemplate<TObject> Build()
+    {
+        FinalizeCurrentField();
+        return _parent.Build();
+    }
+    
+    private void FinalizeCurrentField()
+    {
+        if (_rules.Count > 0)
+        {
+            var fieldValidator = FieldValidator<TObject, TField>.Create(_accessor, _fieldName, _rules);
+            _parent.AddFieldValidator(fieldValidator);
+        }
     }
 }

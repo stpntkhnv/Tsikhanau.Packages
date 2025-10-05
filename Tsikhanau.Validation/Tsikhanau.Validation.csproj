@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <PackageId>Tsikhanau.Validation</PackageId>
+        <Version>1.0.1</Version>
+        <Authors>Stsiapan Tsikhanau</Authors>
+        <Description>Core building blocks</Description>
+        <IncludeBuildOutput>true</IncludeBuildOutput>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -9,7 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Tsikhanau.Foundation\Tsikhanau.Foundation.csproj" />
       <ProjectReference Include="..\Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj" />
-      <ProjectReference Include="..\Tsikhanau.Packages.ValueObjects\Tsikhanau.Packages.ValueObjects.csproj" />
+      <ProjectReference Include="..\Tsikhanau.ValueObjects\Tsikhanau.ValueObjects.csproj" />
     </ItemGroup>
 
 </Project>

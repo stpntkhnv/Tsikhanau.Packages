@@ -16,4 +16,14 @@ public static class Result
     
     public static Result<Unit, Error> Failure()
         => Result<Unit, Error>.Failure(Error.Unknown);
+
+    public static Result<TData, Error> ToResult<TData>(this TData data, Func<TData, Boolean> defineSuccess)
+    {
+        if (defineSuccess(data))
+        {
+            return Result<TData, Error>.Success(data);
+        }
+        
+        return Result<TData, Error>.Failure(Error.Unknown);
+    }
 }

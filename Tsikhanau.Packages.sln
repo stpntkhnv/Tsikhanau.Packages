@@ -13,7 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Validation", "Tsi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Flow", "Tsikhanau.Flow\Tsikhanau.Flow.csproj", "{35286125-0641-4BFB-9C2C-68A770E72CBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Packages.ValueObjects", "Tsikhanau.Packages.ValueObjects\Tsikhanau.Packages.ValueObjects.csproj", "{11D676D8-6760-4B87-82B5-920E0846165D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.ValueObjects", "Tsikhanau.ValueObjects\Tsikhanau.ValueObjects.csproj", "{11D676D8-6760-4B87-82B5-920E0846165D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Guards", "Tsikhanau.Guards\Tsikhanau.Guards.csproj", "{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,5 +51,9 @@ Global
 		{11D676D8-6760-4B87-82B5-920E0846165D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D676D8-6760-4B87-82B5-920E0846165D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11D676D8-6760-4B87-82B5-920E0846165D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4ED2FD3-F686-4BFA-86B1-95C096E9A768}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

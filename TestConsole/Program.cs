@@ -20,59 +20,57 @@ var invalidRequest = new UserRegistrationRequest
     }
 };
 
+// Beautiful new DSL syntax!
+var validationTemplate = ValidationTemplate<UserRegistrationRequest>.Create()
+    .Field(r => r.Email, "Email")
+        .Must(email => email.Contains('@'), "Must contain @ symbol")
+        .Must(email => email.Length >= 5, "Email must be at least 5 characters")
+    .Field(x => x.Password, "Password")
+        .Must(p => p.Length >= 8, "Must be at least 8 characters")
+        .Must(p => p.Any(Char.IsDigit), "Must contain at least one digit")
+        .Must(p => p.Any(c => !Char.IsLetterOrDigit(c)), "Must contain a special character")
+    .Field(x => x.ConfirmPassword, "Confirm Password")
+        .Must(cp => cp == invalidRequest.Password, "Passwords do not match")
+    .Field(x => x.FullName, "Full Name")
+        .Must(fn => !String.IsNullOrWhiteSpace(fn), "Full name is required")
+        .Must(fn => fn.Split(' ').Length >= 2, "Full name must contain at least two words")
+    .Object()
+        .Must(req => req.PhoneNumbers.Count != 0, "At least one phone number is required")
+        .Must(req => req.PhoneNumbers.All(p => !String.IsNullOrWhiteSpace(p.Number)), "Phone number cannot be empty")
+        .Must(req => req.PhoneNumbers.All(p => new[] { "mobile", "home", "work" }.Contains(p.Type)), "Invalid phone number type")
+    .Build();
 
-var validationTemplateBuilder = ValidationTemplateBuilder<UserRegistrationRequest>.New()
-    .ForObject(invalidRequest)
-    .ForField(r => r.Email)
-        .WithFieldName("Email")
-        .AddRule(email => email == "john.doe@example.com", "Incorrect email address")
-        .Build()
-    .ForField(x => x.Password)
-        .WithFieldName("Password")
-        .AddRule(p => p.Length >= 8, "Must be at least 8 characters")
-        .AddRule(p => p.Any(char.IsDigit), "Must contain at least one digit")
-        .AddRule(p => p.Any(c => !char.IsLetterOrDigit(c)), "Must contain a special character")
-        .Build()
-    .ForField(x => x.ConfirmPassword)
-        .WithFieldName("ConfirmPassword")
-        .AddRule(cp => cp == invalidRequest.Password, "Passwords do not match")
-        .Build()
-    .ForField(x => x.FullName)
-        .WithFieldName("Full Name")
-        .AddRule(fn => fn.Split(' ').Length >= 2, "Full name must contain at least two words")
-        .Build()
-    .ForField(x => x.Address)
-        .WithFieldName("Address")
-        .AddRule(a => a != null, "Address is required")
-        .Build()
-    .AddObjectRule(req =>
-        req.PhoneNumbers != null && req.PhoneNumbers.Any(), "At least one phone number is required")
-    .AddObjectRule(req =>
-        req.PhoneNumbers.All(p => !string.IsNullOrWhiteSpace(p.Number)), "Phone number cannot be empty")
-    .AddObjectRule(req =>
-        req.PhoneNumbers.All(p => new[] { "mobile", "home", "work" }.Contains(p.Type)), "Invalid phone number type");
+// Test the validation
+var result = validationTemplate.Validate(invalidRequest);
+Console.WriteLine($"Validation result: {(result.IsSuccess ? "SUCCESS" : "FAILED")}");
+
+if (result.IsFailure)
+{
+    Console.WriteLine("Validation errors:");
+    Console.WriteLine(result.Error!.Message);
+}
 
 
 
 public class UserRegistrationRequest
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string ConfirmPassword { get; set; }
-    public string FullName { get; set; }
+    public String Email { get; set; }
+    public String Password { get; set; }
+    public String ConfirmPassword { get; set; }
+    public String FullName { get; set; }
     public Address Address { get; set; }
     public List<PhoneNumber> PhoneNumbers { get; set; }
 }
 
 public class Address
 {
-    public string Street { get; set; }
-    public string City { get; set; }
-    public string ZipCode { get; set; }
+    public String Street { get; set; }
+    public String City { get; set; }
+    public String ZipCode { get; set; }
 }
 
 public class PhoneNumber
 {
-    public string Type { get; set; } // "mobile", "home", "work"
-    public string Number { get; set; }
+    public String Type { get; set; } // "mobile", "home", "work"
+    public String Number { get; set; }
 }
