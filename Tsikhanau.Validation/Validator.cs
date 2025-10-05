@@ -9,7 +9,7 @@ public sealed class Validator<T>
 {
     private readonly T _data;
     private readonly ValidationTemplate<T> _template;
-    
+
     private Validator(T data, ValidationTemplate<T> template)
     {
         _data = data;

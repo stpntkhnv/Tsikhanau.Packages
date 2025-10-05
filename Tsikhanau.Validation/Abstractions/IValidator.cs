@@ -3,7 +3,7 @@ using Tsikhanau.Outcomes.Result;
 
 namespace Tsikhanau.Validation.Abstractions;
 
-public interface IValidator<T>
+public interface IValidator<T> where T : notnull
 {
     Result<T, ValidationError> Validate(T instance);
 }
