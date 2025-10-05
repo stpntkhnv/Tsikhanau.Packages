@@ -7,6 +7,8 @@ public static partial class ResultExtensions
     public static Result<TData, TError> OnSuccess<TData, TError>(
         this Result<TData, TError> result,
         Action<TData> action)
+        where TData : notnull
+        where TError : notnull
     {
         if (result.IsSuccess)
         {
@@ -18,6 +20,8 @@ public static partial class ResultExtensions
     public static Result<TData, TError> OnFailure<TData, TError>(
         this Result<TData, TError> result,
         Action<TError> action)
+        where TData : notnull
+        where TError : notnull
     {
         if (result.IsFailure)
         {

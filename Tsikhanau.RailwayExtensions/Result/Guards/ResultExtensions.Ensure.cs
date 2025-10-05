@@ -8,6 +8,8 @@ public static partial class ResultExtensions
         this Result<TData, TError> result,
         Func<TData, Boolean> predicate,
         TError error)
+        where TData : notnull
+        where TError : notnull
     {
         if (result.IsFailure)
         {

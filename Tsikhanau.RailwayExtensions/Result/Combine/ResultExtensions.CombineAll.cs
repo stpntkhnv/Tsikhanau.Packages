@@ -6,12 +6,16 @@ public static partial class ResultExtensions
 {
     public static Result<IList<TData>, IList<TError>> CombineAll<TData, TError>(
         params Result<TData, TError>[] results)
+        where TData : notnull
+        where TError : notnull
     {
         return CombineAll((IEnumerable<Result<TData, TError>>)results);
     }
 
     public static Result<IList<TData>, IList<TError>> CombineAll<TData, TError>(
         IEnumerable<Result<TData, TError>> results)
+        where TData : notnull
+        where TError : notnull
     {
         var resultsList = results.ToList();
         var successes = new List<TData>();

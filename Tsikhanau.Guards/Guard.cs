@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
@@ -128,7 +129,7 @@ public static class Guard
     {
         AgainstNull(value, paramName);
         AgainstNullOrEmpty(pattern, nameof(pattern));
-        
+
         if (!Regex.IsMatch(value, pattern))
             throw new ArgumentException($"Parameter '{paramName}' does not match the required format.", paramName);
         return value;
@@ -147,7 +148,7 @@ public static class Guard
     {
         AgainstNull(value, paramName);
         AgainstNull(regex, nameof(regex));
-        
+
         if (!regex.IsMatch(value))
             throw new ArgumentException($"Parameter '{paramName}' does not match the required format.", paramName);
         return value;
@@ -511,7 +512,7 @@ public static class Guard
     public static string AgainstInvalidFilePath(string path, [CallerArgumentExpression(nameof(path))] string paramName = "")
     {
         AgainstNullOrWhiteSpace(path, paramName);
-        
+
         try
         {
             var fullPath = Path.GetFullPath(path);
@@ -536,7 +537,7 @@ public static class Guard
     public static string AgainstInvalidDirectoryPath(string path, [CallerArgumentExpression(nameof(path))] string paramName = "")
     {
         AgainstNullOrWhiteSpace(path, paramName);
-        
+
         try
         {
             var fullPath = Path.GetFullPath(path);

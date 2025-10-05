@@ -8,6 +8,8 @@ public static partial class ResultExtensions
         this Result<TData, TError> result,
         Func<TData, TOutput> onSuccess,
         Func<TError, TOutput> onFailure)
+        where TData : notnull
+        where TError : notnull
     {
         return result.IsSuccess
             ? onSuccess(result.Value)

@@ -2,15 +2,21 @@ using Tsikhanau.Outcomes.Result;
 
 namespace Tsikhanau.RailwayExtensions.Result.GetValue;
 
-public static partial class ResultExtensions 
+public static partial class ResultExtensions
 {
     public static TData GetValueOrDefault<TData, TError>(
         this Result<TData, TError> result,
-        TData defaultValue = default!) =>
+        TData defaultValue = default!)
+        where TData : notnull
+        where TError : notnull
+        =>
         result.IsSuccess ? result.Value : defaultValue;
 
     public static TData GetValueOrDefault<TData, TError>(
         this Result<TData, TError> result,
-        Func<TData> defaultValueFactory) =>
+        Func<TData> defaultValueFactory)
+        where TData : notnull
+        where TError : notnull
+        =>
         result.IsSuccess ? result.Value : defaultValueFactory();
 }
