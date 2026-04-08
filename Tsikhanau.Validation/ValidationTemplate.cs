@@ -39,9 +39,9 @@ public class ValidationTemplate<TObject> where TObject : notnull
         return new ValidationTemplate<TObject>(fieldValidators, objectRules, asyncObjectRules ?? []);
     }
 
-    public Result<Unit, ValidationError> Validate(TObject @object)
+    public Result<Unit, Error> Validate(TObject @object)
     {
-        List<ValidationError> errors = [
+        List<Error> errors = [
             .._fieldValidators
                 .Select(x => x.Validate(@object))
                 .Where(x => x.IsFailure)
@@ -51,16 +51,16 @@ public class ValidationTemplate<TObject> where TObject : notnull
                 .Where(x => x.IsFailure)
                 .Select(x => x.Error)
         ];
-        
+
         if (errors.Any())
             return ValidationError.From(errors);
 
         return Unit.Value;
     }
 
-    public Result<TObject, ValidationError> ValidateAndReturn(TObject @object)
+    public Result<TObject, Error> ValidateAndReturn(TObject @object)
     {
-        List<ValidationError> errors = [
+        List<Error> errors = [
             .._fieldValidators
                 .Select(x => x.Validate(@object))
                 .Where(x => x.IsFailure)
@@ -77,7 +77,7 @@ public class ValidationTemplate<TObject> where TObject : notnull
         return @object;
     }
 
-    public async Task<Result<Unit, ValidationError>> ValidateAsync(TObject @object)
+    public async Task<Result<Unit, Error>> ValidateAsync(TObject @object)
     {
         var fieldResults = await Task.WhenAll(
             _fieldValidators.Select(x => x.ValidateAsync(@object)));
@@ -85,7 +85,7 @@ public class ValidationTemplate<TObject> where TObject : notnull
         var asyncObjResults = await Task.WhenAll(
             _asyncObjectRules.Select(x => x.ValidateAsync(@object)));
 
-        List<ValidationError> errors = [
+        List<Error> errors = [
             ..fieldResults
                 .Where(x => x.IsFailure)
                 .Select(x => x.Error),
@@ -104,7 +104,7 @@ public class ValidationTemplate<TObject> where TObject : notnull
         return Unit.Value;
     }
 
-    public async Task<Result<TObject, ValidationError>> ValidateAndReturnAsync(TObject @object)
+    public async Task<Result<TObject, Error>> ValidateAndReturnAsync(TObject @object)
     {
         var result = await ValidateAsync(@object);
         return result.IsSuccess ? @object : result.Error;

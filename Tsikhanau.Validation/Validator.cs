@@ -20,7 +20,7 @@ public sealed class Validator<T> : IValidator<T> where T : notnull
         return new Validator<T>(template);
     }
 
-    public Result<T, ValidationError> Validate(T instance)
+    public Result<T, Error> Validate(T instance)
     {
         return _template.ValidateAndReturn(instance);
     }

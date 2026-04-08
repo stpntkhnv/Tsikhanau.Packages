@@ -28,7 +28,7 @@ public class ValidatorBuilder<TObject> where TObject : notnull
         return this;
     }
 
-    public Result<Unit, ValidationError> Validate()
+    public Result<Unit, Error> Validate()
     {
         if (_templates.Count == 0)
             return Unit.Value;
@@ -39,8 +39,8 @@ public class ValidatorBuilder<TObject> where TObject : notnull
             .Select(result => result.Error!)
             .ToList();
 
-        return errors.Count == 0 
-            ? Unit.Value 
+        return errors.Count == 0
+            ? Unit.Value
             : ValidationError.From(errors);
     }
 }

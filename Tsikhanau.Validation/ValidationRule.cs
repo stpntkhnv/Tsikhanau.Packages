@@ -25,7 +25,7 @@ public record class ValidationRule<T>
         return new ValidationRule<T>(validationDelegate, errorMessage);
     }
 
-    public Result<Unit, ValidationError> Validate(T value)
+    public Result<Unit, Error> Validate(T value)
     {
         if (_validationDelegate(value))
         {

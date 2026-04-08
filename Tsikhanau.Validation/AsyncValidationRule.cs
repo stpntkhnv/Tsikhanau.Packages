@@ -25,7 +25,7 @@ public record class AsyncValidationRule<T>
         return new AsyncValidationRule<T>(validationDelegate, errorMessage);
     }
 
-    public async Task<Result<Unit, ValidationError>> ValidateAsync(T value)
+    public async Task<Result<Unit, Error>> ValidateAsync(T value)
     {
         if (await _validationDelegate(value))
         {

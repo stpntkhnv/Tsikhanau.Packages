@@ -5,5 +5,5 @@ namespace Tsikhanau.Validation.Abstractions;
 
 public interface IValidator<T> where T : notnull
 {
-    Result<T, ValidationError> Validate(T instance);
+    Result<T, Error> Validate(T instance);
 }

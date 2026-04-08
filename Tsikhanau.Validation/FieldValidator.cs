@@ -42,7 +42,7 @@ public class FieldValidator<TObject, TField> : IFieldValidator<TObject> where TO
         return new FieldValidator<TObject, TField>(fieldAccessor, fieldName, validationRules, asyncRules);
     }
 
-    public Result<Unit, ValidationError> Validate(TObject obj)
+    public Result<Unit, Error> Validate(TObject obj)
     {
         var value = _fieldAccessor(obj);
         var errors = _validationRules
@@ -56,7 +56,7 @@ public class FieldValidator<TObject, TField> : IFieldValidator<TObject> where TO
             : ValidationError.From(errors);
     }
 
-    public async Task<Result<Unit, ValidationError>> ValidateAsync(TObject obj)
+    public async Task<Result<Unit, Error>> ValidateAsync(TObject obj)
     {
         var value = _fieldAccessor(obj);
 
