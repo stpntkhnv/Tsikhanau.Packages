@@ -4,15 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Structure
 
-This is a .NET 9.0 solution containing multiple C# libraries that implement functional programming patterns:
+This is a .NET 9.0 solution containing C# libraries that implement functional programming patterns:
 
-- **Tsikhanau.Monads**: Monadic types (Result, Optional, Either) and Error types for railway-oriented programming
 - **Tsikhanau.Foundation**: Base utilities including validation (Guard, Ensure), clock abstraction, and Unit type
-- **Tsikhanau.RailwayExtensions**: Extension methods for Result, Optional, Either (Bind, Map, Combine, etc.)
-- **Tsikhanau.Flow**: Workflow execution engine with step-by-step processing and error handling
-- **Tsikhanau.Validation**: Field validation framework with builders and templates
-- **Tsikhanau.Packages.ValueObjects**: Value object implementations (NotEmptyString, RequiredGuid, etc.)
-- **TestConsole**: Console application for testing the libraries
+- **Tsikhanau.Monads**: Monadic types (Result, Optional, Either) and Error types for railway-oriented programming
+- **Tsikhanau.RailwayExtensions**: Extension methods for Result, Optional, Either (Bind, Map, Tap, Match, etc.) + cross-type conversions
+- **Tsikhanau.Validation**: Fluent validation framework with builders, templates, sync and async support
 
 ## Build Commands
 
@@ -22,29 +19,26 @@ dotnet build
 
 # Build specific project
 dotnet build Tsikhanau.Foundation/Tsikhanau.Foundation.csproj
-
-# Run the test console
-dotnet run --project TestConsole
 ```
 
 ## Architecture Patterns
 
 ### Result Type Pattern
-The codebase heavily uses `Result<TData, TError>` for error handling instead of exceptions. All operations return Result types that can be Success or Failure.
+The codebase uses `Result<TData, Error>` for error handling instead of exceptions. All operations return Result types that can be Success or Failure.
 
 ### Railway-Oriented Programming
-The RailwayExtensions library provides fluent methods for chaining operations:
-- `Bind()` - Chain operations that return Result
-- `Map()` - Transform success values
+The RailwayExtensions library provides fluent methods for chaining operations on Result, Optional, and Either:
+- `Bind()` - Chain operations that return the monadic type
+- `Map()` - Transform inner values
+- `Tap()` - Side effects without changing the value
+- `Match()` - Pattern match on success/failure states
+- `Where()` - Filter Optional values
+- `Or()` / `OrElse()` - Fallback for Optional
 - `Combine()` - Combine multiple Results
-- `Tap()` - Side effects on success
-- `TapError()` - Side effects on failure
+- Cross-type conversions: `ToResult()`, `ToOptional()`, `ToEither()`
 
-### Flow Pattern
-The Flow library implements a workflow execution pattern where complex operations are broken into sequential steps. Each step can access a shared FlowContext and the flow tracks execution metadata.
-
-### Value Objects
-Value objects are implemented with validation and immutability. They use the Foundation validation utilities.
+### Validation
+Fluent builder DSL for validation with `Must()` / `MustAsync()` rules. Returns `Result<T, Error>` for seamless integration with railway chains.
 
 ## Development Guidelines
 
@@ -52,5 +46,5 @@ Value objects are implemented with validation and immutability. They use the Fou
 - Use `Result<T, Error>` instead of throwing exceptions
 - Guard against null values using `Guard.AgainstNull()`
 - Follow existing naming conventions (PascalCase for public members)
-- Value objects should be readonly structs with validation
 - Use `Unit` type for operations that don't return meaningful data
+- Sync extension methods use `[MethodImpl(MethodImplOptions.AggressiveInlining)]`
