@@ -25,7 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tsikhanau.Foundation\Tsikhanau.Foundation.csproj" />
-    <ProjectReference Include="..\Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj" />
+    <ProjectReference Include="..\Tsikhanau.Monads\Tsikhanau.Monads.csproj" />
     <ProjectReference Include="..\Tsikhanau.RailwayExtensions\Tsikhanau.RailwayExtensions.csproj" />
   </ItemGroup>
 

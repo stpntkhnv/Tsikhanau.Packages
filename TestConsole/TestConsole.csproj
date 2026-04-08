@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj" />
+      <ProjectReference Include="..\Tsikhanau.Monads\Tsikhanau.Monads.csproj" />
       <ProjectReference Include="..\Tsikhanau.Flow\Tsikhanau.Flow.csproj" />
       <ProjectReference Include="..\Tsikhanau.ValueObjects\Tsikhanau.ValueObjects.csproj" />
       <ProjectReference Include="..\Tsikhanau.RailwayExtensions\Tsikhanau.RailwayExtensions.csproj" />

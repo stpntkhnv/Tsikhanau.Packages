@@ -1,4 +1,4 @@
-namespace Tsikhanau.Outcomes.Errors;
+namespace Tsikhanau.Monads.Errors;
 
 public sealed class ValidationError : Error
 {

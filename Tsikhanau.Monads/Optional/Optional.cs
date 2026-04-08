@@ -1,6 +1,6 @@
 using Tsikhanau.Foundation.Validation;
 
-namespace Tsikhanau.Outcomes.Optional;
+namespace Tsikhanau.Monads.Optional;
 
 public readonly struct Optional<T> : IEquatable<Optional<T>>
 {

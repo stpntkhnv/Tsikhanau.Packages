@@ -30,8 +30,8 @@ dotnet nuget push ./nugets/Tsikhanau.Foundation.1.0.0.nupkg \
     --skip-duplicate
 
 echo ""
-echo "[2/7] Publishing Tsikhanau.Outcomes..."
-dotnet nuget push ./nugets/Tsikhanau.Outcomes.1.0.1.nupkg \
+echo "[2/7] Publishing Tsikhanau.Monads..."
+dotnet nuget push ./nugets/Tsikhanau.Monads.2.0.0.nupkg \
     --api-key $NUGET_API_KEY \
     --source $NUGET_SOURCE \
     --skip-duplicate

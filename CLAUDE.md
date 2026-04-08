@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a .NET 9.0 solution containing multiple C# libraries that implement functional programming patterns:
 
-- **Tsikhanau.Outcomes**: Core Result and Error types for railway-oriented programming
+- **Tsikhanau.Monads**: Monadic types (Result, Optional, Either) and Error types for railway-oriented programming
 - **Tsikhanau.Foundation**: Base utilities including validation (Guard, Ensure), clock abstraction, and Unit type
-- **Tsikhanau.RailwayExtensions**: Extension methods for Result type (Bind, Map, Combine, etc.)
+- **Tsikhanau.RailwayExtensions**: Extension methods for Result, Optional, Either (Bind, Map, Combine, etc.)
 - **Tsikhanau.Flow**: Workflow execution engine with step-by-step processing and error handling
 - **Tsikhanau.Validation**: Field validation framework with builders and templates
 - **Tsikhanau.Packages.ValueObjects**: Value object implementations (NotEmptyString, RequiredGuid, etc.)

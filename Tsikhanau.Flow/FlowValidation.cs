@@ -1,7 +1,7 @@
 using Tsikhanau.Foundation.General;
-using Tsikhanau.Outcomes;
-using Tsikhanau.Outcomes.Errors;
-using Tsikhanau.Outcomes.Result;
+using Tsikhanau.Monads;
+using Tsikhanau.Monads.Errors;
+using Tsikhanau.Monads.Result;
 using Tsikhanau.RailwayExtensions;
 
 namespace Tsikhanau.Flow;

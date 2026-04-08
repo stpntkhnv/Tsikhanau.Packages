@@ -1,7 +1,7 @@
 using Tsikhanau.Foundation.General;
-using Tsikhanau.Outcomes.Errors;
+using Tsikhanau.Monads.Errors;
 
-namespace Tsikhanau.Outcomes.Result;
+namespace Tsikhanau.Monads.Result;
 
 public static class Result
 {

@@ -1,5 +1,5 @@
-using Tsikhanau.Outcomes;
-using Tsikhanau.Outcomes.Errors;
+using Tsikhanau.Monads;
+using Tsikhanau.Monads.Errors;
 
 namespace Tsikhanau.Flow;
 

@@ -23,22 +23,22 @@ echo ""
 echo "[1/7] Building Tsikhanau.Foundation..."
 dotnet pack Tsikhanau.Foundation/Tsikhanau.Foundation.csproj --configuration Release --output ./nugets
 
-# 2. Outcomes (depends on Foundation)
+# 2. Monads (depends on Foundation)
 echo ""
-echo "[2/7] Building Tsikhanau.Outcomes..."
-dotnet pack Tsikhanau.Outcomes/Tsikhanau.Outcomes.csproj --configuration Release --output ./nugets
+echo "[2/7] Building Tsikhanau.Monads..."
+dotnet pack Tsikhanau.Monads/Tsikhanau.Monads.csproj --configuration Release --output ./nugets
 
-# 3. ValueObjects (depends on Outcomes)
+# 3. ValueObjects (depends on Monads)
 echo ""
 echo "[3/7] Building Tsikhanau.ValueObjects..."
 dotnet pack Tsikhanau.ValueObjects/Tsikhanau.ValueObjects.csproj --configuration Release --output ./nugets
 
-# 4. RailwayExtensions (depends on Foundation + Outcomes)
+# 4. RailwayExtensions (depends on Foundation + Monads)
 echo ""
 echo "[4/7] Building Tsikhanau.RailwayExtensions..."
 dotnet pack Tsikhanau.RailwayExtensions/Tsikhanau.RailwayExtensions.csproj --configuration Release --output ./nugets
 
-# 5. Validation (depends on Foundation + Outcomes + ValueObjects)
+# 5. Validation (depends on Foundation + Monads + ValueObjects)
 echo ""
 echo "[5/7] Building Tsikhanau.Validation..."
 dotnet pack Tsikhanau.Validation/Tsikhanau.Validation.csproj --configuration Release --output ./nugets
@@ -48,7 +48,7 @@ echo ""
 echo "[6/7] Building Tsikhanau.Guards..."
 dotnet pack Tsikhanau.Guards/Tsikhanau.Guards.csproj --configuration Release --output ./nugets
 
-# 7. Flow (depends on Foundation + Outcomes + RailwayExtensions)
+# 7. Flow (depends on Foundation + Monads + RailwayExtensions)
 echo ""
 echo "[7/7] Building Tsikhanau.Flow..."
 dotnet pack Tsikhanau.Flow/Tsikhanau.Flow.csproj --configuration Release --output ./nugets

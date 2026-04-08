@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Outcomes", "Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj", "{BA3E2047-237E-4BED-8981-4A4A553F9DAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Monads", "Tsikhanau.Monads\Tsikhanau.Monads.csproj", "{BA3E2047-237E-4BED-8981-4A4A553F9DAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsikhanau.Foundation", "Tsikhanau.Foundation\Tsikhanau.Foundation.csproj", "{9A32EABF-E345-4E99-8CEB-16E04DB22F6C}"
 EndProject

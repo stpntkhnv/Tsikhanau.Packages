@@ -1,7 +1,7 @@
 using Tsikhanau.Foundation.General;
 using Tsikhanau.Foundation.Validation;
-using Tsikhanau.Outcomes.Errors;
-using Tsikhanau.Outcomes.Result;
+using Tsikhanau.Monads.Errors;
+using Tsikhanau.Monads.Result;
 
 namespace Tsikhanau.Validation;
 

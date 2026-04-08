@@ -1,6 +1,6 @@
 using Tsikhanau.Foundation.Validation;
 
-namespace Tsikhanau.Outcomes.Either;
+namespace Tsikhanau.Monads.Either;
 
 public readonly struct Either<TLeft, TRight> : IEquatable<Either<TLeft, TRight>>
 {

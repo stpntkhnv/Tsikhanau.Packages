@@ -1,5 +1,5 @@
 using Tsikhanau.Foundation.General;
-using Tsikhanau.Outcomes.Result;
+using Tsikhanau.Monads.Result;
 
 namespace Tsikhanau.RailwayExtensions.Result.Combine;
 

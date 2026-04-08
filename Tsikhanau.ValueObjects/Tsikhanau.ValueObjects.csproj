@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tsikhanau.Outcomes\Tsikhanau.Outcomes.csproj" />
+      <ProjectReference Include="..\Tsikhanau.Monads\Tsikhanau.Monads.csproj" />
     </ItemGroup>
 
 </Project>

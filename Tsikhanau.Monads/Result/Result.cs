@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Tsikhanau.Foundation.Validation;
 
-namespace Tsikhanau.Outcomes.Result;
+namespace Tsikhanau.Monads.Result;
 
 public readonly struct Result<TData, TError> : IEquatable<Result<TData, TError>>
     where TData : notnull

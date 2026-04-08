@@ -1,6 +1,6 @@
 using Tsikhanau.Foundation.Validation;
 
-namespace Tsikhanau.Outcomes.Errors;
+namespace Tsikhanau.Monads.Errors;
 
 public class Error : IEquatable<Error>
 {
