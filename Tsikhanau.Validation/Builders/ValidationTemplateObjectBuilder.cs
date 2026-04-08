@@ -1,5 +1,4 @@
 using Tsikhanau.Foundation.Validation;
-using Tsikhanau.Packages.ValueObjects.String;
 
 namespace Tsikhanau.Validation.Builders;
 
@@ -12,31 +11,29 @@ public class ValidationTemplateObjectBuilder<TObject> where TObject : notnull
         _parent = parent;
     }
 
-    public ValidationTemplateObjectBuilder<TObject> Must(Func<TObject, bool> rule, string message)
-    {
-        Guard.AgainstNull(rule);
-        Guard.AgainstNullOrWhiteSpace(message);
-        
-        var validationRule = ValidationRule<TObject>.WithMessage(rule, NotEmptyString.FromString(message).Value);
-        _parent.AddObjectRule(validationRule);
-        return this;
-    }
-    
-    public ValidationTemplateObjectBuilder<TObject> MustAsync(Func<TObject, Task<bool>> rule, string message)
+    public ValidationTemplateObjectBuilder<TObject> Must(Func<TObject, Boolean> rule, String message)
     {
         Guard.AgainstNull(rule);
         Guard.AgainstNullOrWhiteSpace(message);
 
-        var asyncRule = AsyncValidationRule<TObject>.WithMessage(rule, NotEmptyString.FromString(message).Value);
-        _parent.AddAsyncObjectRule(asyncRule);
+        _parent.AddObjectRule(ValidationRule<TObject>.WithMessage(rule, message));
         return this;
     }
 
-    public FieldValidatorBuilder<TObject, TField> Field<TField>(Func<TObject, TField> fieldAccessor, string fieldName)
+    public ValidationTemplateObjectBuilder<TObject> MustAsync(Func<TObject, Task<Boolean>> rule, String message)
+    {
+        Guard.AgainstNull(rule);
+        Guard.AgainstNullOrWhiteSpace(message);
+
+        _parent.AddAsyncObjectRule(AsyncValidationRule<TObject>.WithMessage(rule, message));
+        return this;
+    }
+
+    public FieldValidatorBuilder<TObject, TField> Field<TField>(Func<TObject, TField> fieldAccessor, String fieldName)
     {
         return _parent.Field(fieldAccessor, fieldName);
     }
-    
+
     public ValidationTemplate<TObject> Build()
     {
         return _parent.Build();

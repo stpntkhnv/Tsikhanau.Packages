@@ -2,26 +2,26 @@ using Tsikhanau.Foundation.General;
 using Tsikhanau.Foundation.Validation;
 using Tsikhanau.Monads.Errors;
 using Tsikhanau.Monads.Result;
-using Tsikhanau.Packages.ValueObjects.String;
 
 namespace Tsikhanau.Validation;
 
 public record class ValidationRule<T>
 {
     private readonly Func<T, Boolean> _validationDelegate;
-    private readonly NotEmptyString _errorMessage;
-    
-    public NotEmptyString ErrorMessage => _errorMessage;
+    private readonly String _errorMessage;
 
-    private ValidationRule(Func<T, Boolean> validationDelegate, NotEmptyString errorMessage)
+    public String ErrorMessage => _errorMessage;
+
+    private ValidationRule(Func<T, Boolean> validationDelegate, String errorMessage)
     {
         _validationDelegate = validationDelegate;
         _errorMessage = errorMessage;
     }
 
-    public static ValidationRule<T> WithMessage(Func<T, Boolean> validationDelegate, NotEmptyString errorMessage)
+    public static ValidationRule<T> WithMessage(Func<T, Boolean> validationDelegate, String errorMessage)
     {
         Guard.AgainstNull(validationDelegate);
+        Guard.AgainstNullOrWhiteSpace(errorMessage);
         return new ValidationRule<T>(validationDelegate, errorMessage);
     }
 
@@ -30,10 +30,10 @@ public record class ValidationRule<T>
         if (_validationDelegate(value))
         {
             return Unit.Value;
-        };
+        }
 
-        return ValidationError.Single(_errorMessage.Value);
+        return ValidationError.Single(_errorMessage);
     }
-    
-    public override String ToString() => $"ValidationRule<{typeof(T).Name}>: '{_errorMessage.Value}'";
+
+    public override String ToString() => $"ValidationRule<{typeof(T).Name}>: '{_errorMessage}'";
 }

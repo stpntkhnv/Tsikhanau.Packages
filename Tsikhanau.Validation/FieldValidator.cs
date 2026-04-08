@@ -2,7 +2,6 @@ using Tsikhanau.Foundation.General;
 using Tsikhanau.Foundation.Validation;
 using Tsikhanau.Monads.Errors;
 using Tsikhanau.Monads.Result;
-using Tsikhanau.Packages.ValueObjects.String;
 using Tsikhanau.Validation.Abstractions;
 
 namespace Tsikhanau.Validation;
@@ -10,13 +9,13 @@ namespace Tsikhanau.Validation;
 public class FieldValidator<TObject, TField> : IFieldValidator<TObject> where TObject : notnull
 {
     private readonly Func<TObject, TField> _fieldAccessor;
-    private readonly NotEmptyString _fieldName;
+    private readonly String _fieldName;
     private readonly List<ValidationRule<TField>> _validationRules;
     private readonly List<AsyncValidationRule<TField>> _asyncValidationRules;
 
     private FieldValidator(
         Func<TObject, TField> fieldAccessor,
-        NotEmptyString fieldName,
+        String fieldName,
         List<ValidationRule<TField>> validationRules,
         List<AsyncValidationRule<TField>> asyncValidationRules)
     {
@@ -28,11 +27,12 @@ public class FieldValidator<TObject, TField> : IFieldValidator<TObject> where TO
 
     public static FieldValidator<TObject, TField> Create(
         Func<TObject, TField> fieldAccessor,
-        NotEmptyString fieldName,
+        String fieldName,
         List<ValidationRule<TField>> validationRules,
         List<AsyncValidationRule<TField>>? asyncValidationRules = null)
     {
         Guard.AgainstNull(fieldAccessor);
+        Guard.AgainstNullOrWhiteSpace(fieldName);
         Guard.AgainstNull(validationRules);
 
         var asyncRules = asyncValidationRules ?? [];
@@ -48,7 +48,7 @@ public class FieldValidator<TObject, TField> : IFieldValidator<TObject> where TO
         var errors = _validationRules
             .Select(r => r.Validate(value))
             .Where(r => r.IsFailure)
-            .Select(r => $"[{_fieldName.Value}] {r.Error!.Message}")
+            .Select(r => $"[{_fieldName}] {r.Error!.Message}")
             .ToList();
 
         return errors.Count == 0
@@ -63,7 +63,7 @@ public class FieldValidator<TObject, TField> : IFieldValidator<TObject> where TO
         var syncErrors = _validationRules
             .Select(r => r.Validate(value))
             .Where(r => r.IsFailure)
-            .Select(r => $"[{_fieldName.Value}] {r.Error!.Message}")
+            .Select(r => $"[{_fieldName}] {r.Error!.Message}")
             .ToList();
 
         var asyncResults = await Task.WhenAll(
@@ -71,7 +71,7 @@ public class FieldValidator<TObject, TField> : IFieldValidator<TObject> where TO
 
         var asyncErrors = asyncResults
             .Where(r => r.IsFailure)
-            .Select(r => $"[{_fieldName.Value}] {r.Error!.Message}")
+            .Select(r => $"[{_fieldName}] {r.Error!.Message}")
             .ToList();
 
         var allErrors = syncErrors.Concat(asyncErrors).ToList();

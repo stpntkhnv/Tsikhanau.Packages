@@ -27,7 +27,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Tsikhanau.Foundation\Tsikhanau.Foundation.csproj" />
       <ProjectReference Include="..\Tsikhanau.Monads\Tsikhanau.Monads.csproj" />
-      <ProjectReference Include="..\Tsikhanau.ValueObjects\Tsikhanau.ValueObjects.csproj" />
     </ItemGroup>
 
 </Project>
