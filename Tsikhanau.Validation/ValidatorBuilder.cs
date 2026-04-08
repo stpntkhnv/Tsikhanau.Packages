@@ -5,7 +5,7 @@ using Tsikhanau.Monads.Result;
 
 namespace Tsikhanau.Validation;
 
-public class ValidatorBuilder<TObject>
+public class ValidatorBuilder<TObject> where TObject : notnull
 {
     private readonly TObject _object;
     private readonly List<ValidationTemplate<TObject>> _templates = [];

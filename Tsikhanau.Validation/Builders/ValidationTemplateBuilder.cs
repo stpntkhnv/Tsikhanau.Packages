@@ -5,10 +5,11 @@ using Tsikhanau.Validation.Builders;
 
 namespace Tsikhanau.Validation;
 
-public class ValidationTemplateBuilder<TObject>
+public class ValidationTemplateBuilder<TObject> where TObject : notnull
 {
     private readonly List<IFieldValidator<TObject>> _fieldValidators = [];
     private readonly List<ValidationRule<TObject>> _objectRules = [];
+    private readonly List<AsyncValidationRule<TObject>> _asyncObjectRules = [];
     private ValidationTemplateObjectBuilder<TObject>? _objectBuilder;
 
     private ValidationTemplateBuilder() { }
@@ -42,9 +43,16 @@ public class ValidationTemplateBuilder<TObject>
         _objectRules.Add(rule);
         return this;
     }
-    
+
+    internal ValidationTemplateBuilder<TObject> AddAsyncObjectRule(AsyncValidationRule<TObject> rule)
+    {
+        Guard.AgainstNull(rule);
+        _asyncObjectRules.Add(rule);
+        return this;
+    }
+
     public ValidationTemplate<TObject> Build()
     {
-        return ValidationTemplate<TObject>.CreateInternal(_fieldValidators, _objectRules);
+        return ValidationTemplate<TObject>.CreateInternal(_fieldValidators, _objectRules, _asyncObjectRules);
     }
 }

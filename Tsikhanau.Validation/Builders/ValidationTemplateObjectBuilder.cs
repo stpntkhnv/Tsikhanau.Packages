@@ -3,7 +3,7 @@ using Tsikhanau.Packages.ValueObjects.String;
 
 namespace Tsikhanau.Validation.Builders;
 
-public class ValidationTemplateObjectBuilder<TObject>
+public class ValidationTemplateObjectBuilder<TObject> where TObject : notnull
 {
     private readonly ValidationTemplateBuilder<TObject> _parent;
 
@@ -22,6 +22,16 @@ public class ValidationTemplateObjectBuilder<TObject>
         return this;
     }
     
+    public ValidationTemplateObjectBuilder<TObject> MustAsync(Func<TObject, Task<bool>> rule, string message)
+    {
+        Guard.AgainstNull(rule);
+        Guard.AgainstNullOrWhiteSpace(message);
+
+        var asyncRule = AsyncValidationRule<TObject>.WithMessage(rule, NotEmptyString.FromString(message).Value);
+        _parent.AddAsyncObjectRule(asyncRule);
+        return this;
+    }
+
     public FieldValidatorBuilder<TObject, TField> Field<TField>(Func<TObject, TField> fieldAccessor, string fieldName)
     {
         return _parent.Field(fieldAccessor, fieldName);

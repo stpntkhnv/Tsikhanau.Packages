@@ -1,30 +1,27 @@
-using Tsikhanau.Foundation.General;
 using Tsikhanau.Foundation.Validation;
 using Tsikhanau.Monads.Errors;
 using Tsikhanau.Monads.Result;
+using Tsikhanau.Validation.Abstractions;
 
 namespace Tsikhanau.Validation;
 
-public sealed class Validator<T>
+public sealed class Validator<T> : IValidator<T> where T : notnull
 {
-    private readonly T _data;
     private readonly ValidationTemplate<T> _template;
 
-    private Validator(T data, ValidationTemplate<T> template)
+    private Validator(ValidationTemplate<T> template)
     {
-        _data = data;
         _template = template;
     }
 
-    public static Validator<T> Create(T data, ValidationTemplate<T> template)
+    public static Validator<T> Create(ValidationTemplate<T> template)
     {
-        Guard.AgainstNull(data);
         Guard.AgainstNull(template);
-        return new Validator<T>(data, template);
+        return new Validator<T>(template);
     }
 
-    public Result<Unit, ValidationError> Validate()
+    public Result<T, ValidationError> Validate(T instance)
     {
-        return _template.Validate(_data);
+        return _template.ValidateAndReturn(instance);
     }
 }
