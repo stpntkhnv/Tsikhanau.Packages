@@ -4,9 +4,11 @@ using Tsikhanau.Monads.Errors;
 using Tsikhanau.Monads.Result;
 using Tsikhanau.RailwayExtensions;
 
+#pragma warning disable CS8714
+
 namespace Tsikhanau.Flow;
 
-internal class Flow<TInput, TOutput> : IFlow<TInput, TOutput>
+internal class Flow<TInput, TOutput> : IFlow<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     private readonly List<Func<Object?, FlowContext, CancellationToken, Task<Result<Object?, Error>>>> _steps;
     private readonly List<String> _stepNames;
@@ -82,7 +84,7 @@ internal class Flow<TInput, TOutput> : IFlow<TInput, TOutput>
     }
 }
 
-internal class Flow<TOutput> : IFlow<TOutput>
+internal class Flow<TOutput> : IFlow<TOutput> where TOutput : notnull
 {
     private readonly List<Func<FlowContext, CancellationToken, Task<Result<Object?, Error>>>> _steps;
     private readonly List<String> _stepNames;

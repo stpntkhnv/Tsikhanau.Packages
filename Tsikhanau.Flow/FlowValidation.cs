@@ -180,7 +180,7 @@ public static class FlowValidatorExtensions
 {
     public static Result<IFlow<TInput, TOutput>, Error> ValidateAndBuild<TInput, TOutput>(
         this FlowBuilder<TInput, TOutput> builder,
-        IFlowValidator validator)
+        IFlowValidator validator) where TInput : notnull where TOutput : notnull
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(validator);
@@ -195,7 +195,7 @@ public static class FlowValidatorExtensions
 
     public static Result<IFlow<TOutput>, Error> ValidateAndBuild<TOutput>(
         this FlowBuilder<TOutput> builder,
-        IFlowValidator validator)
+        IFlowValidator validator) where TOutput : notnull
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(validator);
@@ -224,23 +224,3 @@ public static class FlowValidatorExtensions
     }
 }
 
-public class FlowStepMetrics
-{
-    public String StepName { get; init; } = String.Empty;
-    public TimeSpan AverageExecutionTime { get; init; }
-    public TimeSpan MinExecutionTime { get; init; }
-    public TimeSpan MaxExecutionTime { get; init; }
-    public Int32 SuccessCount { get; init; }
-    public Int32 FailureCount { get; init; }
-    public Double SuccessRate => SuccessCount + FailureCount == 0 ? 0 : (Double)SuccessCount / (SuccessCount + FailureCount);
-    public DateTime LastExecuted { get; init; }
-    public IReadOnlyList<Error> RecentErrors { get; init; } = new List<Error>().AsReadOnly();
-}
-
-public interface IFlowMetricsCollector
-{
-    void RecordStepExecution(String stepName, TimeSpan duration, Boolean success, Error? error = null);
-    FlowStepMetrics GetStepMetrics(String stepName);
-    IReadOnlyDictionary<String, FlowStepMetrics> GetAllMetrics();
-    void Clear();
-}

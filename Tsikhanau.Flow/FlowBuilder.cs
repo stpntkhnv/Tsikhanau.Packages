@@ -6,31 +6,33 @@ using Tsikhanau.RailwayExtensions;
 using Tsikhanau.RailwayExtensions.Result;
 using Tsikhanau.RailwayExtensions.Result.Map;
 
+#pragma warning disable CS8714, CS8621
+
 namespace Tsikhanau.Flow;
 
-public class FlowBuilder<TInput, TOutput>
+public class FlowBuilder<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     private readonly String _name;
     private readonly List<Func<Object?, FlowContext, CancellationToken, Task<Result<Object?, Error>>>> _steps = [];
     private readonly List<String> _stepNames = [];
 
-    private FlowBuilder(String name)
+    internal FlowBuilder(String name)
     {
         _name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
-    public FlowBuilder<TInput, TNewOutput> Step<TNewOutput>(String stepName, Func<TOutput, FlowContext, CancellationToken, Task<Result<TNewOutput, Error>>> stepFunc)
+    public FlowBuilder<TInput, TNewOutput> Step<TNewOutput>(String stepName, Func<TOutput, FlowContext, CancellationToken, Task<Result<TNewOutput, Error>>> stepFunc) where TNewOutput : notnull
     {
         ArgumentNullException.ThrowIfNull(stepName);
         ArgumentNullException.ThrowIfNull(stepFunc);
 
         var newBuilder = new FlowBuilder<TInput, TNewOutput>(_name);
-        
+
         foreach (var step in _steps)
         {
             newBuilder._steps.Add(step);
         }
-        
+
         foreach (var name in _stepNames)
         {
             newBuilder._stepNames.Add(name);
@@ -45,13 +47,13 @@ public class FlowBuilder<TInput, TOutput>
             }
             return Error.Create("code", $"Invalid input type for step '{stepName}'. Expected {typeof(TOutput).Name}, got {input?.GetType().Name ?? "null"}");
         });
-        
+
         newBuilder._stepNames.Add(stepName);
-        
+
         return newBuilder;
     }
 
-    public FlowBuilder<TInput, TNewOutput> Step<TNewOutput>(String stepName, ITransformStep<TOutput, TNewOutput> step)
+    public FlowBuilder<TInput, TNewOutput> Step<TNewOutput>(String stepName, ITransformStep<TOutput, TNewOutput> step) where TNewOutput : notnull
     {
         ArgumentNullException.ThrowIfNull(step);
         return Step(stepName, step.ExecuteAsync);
@@ -71,7 +73,7 @@ public class FlowBuilder<TInput, TOutput>
             }
             return Error.Create("code", $"Invalid input type for validation step '{stepName}'. Expected {typeof(TOutput).Name}, got {input?.GetType().Name ?? "null"}");
         });
-        
+
         _stepNames.Add(stepName);
         return this;
     }
@@ -100,7 +102,7 @@ public class FlowBuilder<TInput, TOutput>
             }
             return Error.Create("code", $"Invalid input type for action step '{stepName}'. Expected {typeof(TOutput).Name}, got {input?.GetType().Name ?? "null"}");
         });
-        
+
         _stepNames.Add(stepName);
         return this;
     }
@@ -167,7 +169,7 @@ public class FlowBuilder<TInput, TOutput>
     }
 }
 
-public class FlowBuilder<TOutput>
+public class FlowBuilder<TOutput> where TOutput : notnull
 {
     internal readonly String _name;
     internal readonly List<Func<FlowContext, CancellationToken, Task<Result<Object?, Error>>>> _steps = new();
@@ -178,18 +180,18 @@ public class FlowBuilder<TOutput>
         _name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
-    public FlowBuilder<TNewOutput> Step<TNewOutput>(String stepName, Func<FlowContext, CancellationToken, Task<Result<TNewOutput, Error>>> stepFunc)
+    public FlowBuilder<TNewOutput> Step<TNewOutput>(String stepName, Func<FlowContext, CancellationToken, Task<Result<TNewOutput, Error>>> stepFunc) where TNewOutput : notnull
     {
         ArgumentNullException.ThrowIfNull(stepName);
         ArgumentNullException.ThrowIfNull(stepFunc);
 
         var newBuilder = new FlowBuilder<TNewOutput>(_name);
-        
+
         foreach (var step in _steps)
         {
             newBuilder._steps.Add(step);
         }
-        
+
         foreach (var name in _stepNames)
         {
             newBuilder._stepNames.Add(name);
@@ -200,29 +202,10 @@ public class FlowBuilder<TOutput>
             var result = await stepFunc(context, ct);
             return result.Map(r => (Object?)r);
         });
-        
-        newBuilder._stepNames.Add(stepName);
-        
-        return newBuilder;
-    }
 
-    public FlowBuilder<TNewOutput> Step<TNewOutput>(String stepName, IFlowStep step)
-        where TNewOutput : class
-    {
-        ArgumentNullException.ThrowIfNull(step);
-        return Step<TNewOutput>(stepName, async (context, ct) =>
-        {
-            var result = await step.ExecuteAsync(context, ct);
-            if (result.IsSuccess)
-            {
-                if (context.TryGet<TNewOutput>("result", out var value))
-                {
-                    return value;
-                }
-                return Error.Create("code", $"Step '{stepName}' completed successfully but no result of type {typeof(TNewOutput).Name} found in context");
-            }
-            return result.Error;
-        });
+        newBuilder._stepNames.Add(stepName);
+
+        return newBuilder;
     }
 
     public FlowBuilder<TOutput> Do(String stepName, Func<FlowContext, CancellationToken, Task<Result<Unit, Error>>> actionFunc)
@@ -235,7 +218,7 @@ public class FlowBuilder<TOutput>
             var result = await actionFunc(context, ct);
             return result.Map(_ => (Object?)null);
         });
-        
+
         _stepNames.Add(stepName);
         return this;
     }
@@ -268,13 +251,17 @@ public class FlowBuilder
         _name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
-    public FlowBuilder<TOutput> Step<TOutput>(String stepName, Func<FlowContext, CancellationToken, Task<Result<TOutput, Error>>> stepFunc)
+    public static FlowBuilder<TInput, TInput> For<TInput>(String name) where TInput : notnull => new(name);
+
+    public static FlowBuilder Start(String name) => new(name);
+
+    public FlowBuilder<TOutput> Step<TOutput>(String stepName, Func<FlowContext, CancellationToken, Task<Result<TOutput, Error>>> stepFunc) where TOutput : notnull
     {
         ArgumentNullException.ThrowIfNull(stepName);
         ArgumentNullException.ThrowIfNull(stepFunc);
 
         var newBuilder = new FlowBuilder<TOutput>(_name);
-        
+
         foreach (var step in _steps)
         {
             newBuilder._steps.Add(async (context, ct) =>
@@ -283,7 +270,7 @@ public class FlowBuilder
                 return result.Map(_ => (Object?)null);
             });
         }
-        
+
         foreach (var name in _stepNames)
         {
             newBuilder._stepNames.Add(name);
@@ -294,9 +281,9 @@ public class FlowBuilder
             var result = await stepFunc(context, ct);
             return result.Map(r => (Object?)r);
         });
-        
+
         newBuilder._stepNames.Add(stepName);
-        
+
         return newBuilder;
     }
 

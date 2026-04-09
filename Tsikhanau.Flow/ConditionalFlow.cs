@@ -5,7 +5,7 @@ using Tsikhanau.Monads.Result;
 
 namespace Tsikhanau.Flow;
 
-public interface IConditionalFlow<TInput, TOutput>
+public interface IConditionalFlow<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     IConditionalFlow<TInput, TOutput> When(Func<TInput, FlowContext, Boolean> condition, IFlow<TInput, TOutput> flow);
     IConditionalFlow<TInput, TOutput> When(Func<TInput, FlowContext, Boolean> condition, Func<IFlow<TInput, TOutput>> flowFactory);
@@ -14,7 +14,7 @@ public interface IConditionalFlow<TInput, TOutput>
     Task<Result<TOutput, Error>> ExecuteAsync(TInput input, FlowContext context, CancellationToken cancellationToken = default);
 }
 
-public class ConditionalFlow<TInput, TOutput> : IConditionalFlow<TInput, TOutput>
+public class ConditionalFlow<TInput, TOutput> : IConditionalFlow<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     private readonly List<(Func<TInput, FlowContext, Boolean> Condition, Func<IFlow<TInput, TOutput>> FlowFactory)> _conditionalFlows = new();
     private Func<IFlow<TInput, TOutput>>? _otherwiseFlowFactory;
@@ -76,20 +76,20 @@ public class ConditionalFlow<TInput, TOutput> : IConditionalFlow<TInput, TOutput
 
 public static class ConditionalFlowExtensions
 {
-    public static IConditionalFlow<TInput, TOutput> Branch<TInput, TOutput>(this FlowBuilder<TInput, TOutput> builder)
+    public static IConditionalFlow<TInput, TOutput> Branch<TInput, TOutput>(this FlowBuilder<TInput, TOutput> builder) where TInput : notnull where TOutput : notnull
     {
         return new ConditionalFlow<TInput, TOutput>();
     }
 }
 
-public interface IParallelFlow<TInput, TOutput>
+public interface IParallelFlow<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     IParallelFlow<TInput, TOutput> Add(String name, IFlow<TInput, TOutput> flow);
     IParallelFlow<TInput, TOutput> Add(String name, Func<IFlow<TInput, TOutput>> flowFactory);
     Task<Result<IReadOnlyDictionary<String, TOutput>, Error>> ExecuteAsync(TInput input, FlowContext context, CancellationToken cancellationToken = default);
 }
 
-public class ParallelFlow<TInput, TOutput> : IParallelFlow<TInput, TOutput>
+public class ParallelFlow<TInput, TOutput> : IParallelFlow<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     private readonly List<(String Name, Func<IFlow<TInput, TOutput>> FlowFactory)> _parallelFlows = new();
 
@@ -144,7 +144,7 @@ public class ParallelFlow<TInput, TOutput> : IParallelFlow<TInput, TOutput>
 
 public static class ParallelFlowExtensions
 {
-    public static IParallelFlow<TInput, TOutput> Parallel<TInput, TOutput>()
+    public static IParallelFlow<TInput, TOutput> Parallel<TInput, TOutput>() where TInput : notnull where TOutput : notnull
     {
         return new ParallelFlow<TInput, TOutput>();
     }

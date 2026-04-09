@@ -11,25 +11,19 @@ public interface IFlowStep
     Task<Result<Unit, Error>> ExecuteAsync(FlowContext context, CancellationToken cancellationToken = default);
 }
 
-public interface IFlowStep<TInput>
+public interface IFlowStep<TInput> where TInput : notnull
 {
     String Name { get; }
     Task<Result<Unit, Error>> ExecuteAsync(TInput input, FlowContext context, CancellationToken cancellationToken = default);
 }
 
-public interface IFlowStep<TInput, TOutput>
+public interface ITransformStep<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     String Name { get; }
     Task<Result<TOutput, Error>> ExecuteAsync(TInput input, FlowContext context, CancellationToken cancellationToken = default);
 }
 
-public interface ITransformStep<TInput, TOutput>
-{
-    String Name { get; }
-    Task<Result<TOutput, Error>> ExecuteAsync(TInput input, FlowContext context, CancellationToken cancellationToken = default);
-}
-
-public interface IValidationStep<TInput>
+public interface IValidationStep<TInput> where TInput : notnull
 {
     String Name { get; }
     Task<Result<TInput, Error>> ExecuteAsync(TInput input, FlowContext context, CancellationToken cancellationToken = default);

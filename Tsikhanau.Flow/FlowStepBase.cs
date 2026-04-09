@@ -32,7 +32,7 @@ public abstract class FlowStepBase : IFlowStep
     protected abstract Task<Result<Unit, Error>> ExecuteInternalAsync(FlowContext context, CancellationToken cancellationToken);
 }
 
-public abstract class FlowStepBase<TInput> : IFlowStep<TInput>
+public abstract class FlowStepBase<TInput> : IFlowStep<TInput> where TInput : notnull
 {
     protected FlowStepBase(String name)
     {
@@ -56,7 +56,7 @@ public abstract class FlowStepBase<TInput> : IFlowStep<TInput>
     protected abstract Task<Result<Unit, Error>> ExecuteInternalAsync(TInput input, FlowContext context, CancellationToken cancellationToken);
 }
 
-public abstract class TransformStepBase<TInput, TOutput> : ITransformStep<TInput, TOutput>
+public abstract class TransformStepBase<TInput, TOutput> : ITransformStep<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     protected TransformStepBase(String name)
     {
@@ -80,7 +80,7 @@ public abstract class TransformStepBase<TInput, TOutput> : ITransformStep<TInput
     protected abstract Task<Result<TOutput, Error>> ExecuteInternalAsync(TInput input, FlowContext context, CancellationToken cancellationToken);
 }
 
-public abstract class ValidationStepBase<TInput> : IValidationStep<TInput>
+public abstract class ValidationStepBase<TInput> : IValidationStep<TInput> where TInput : notnull
 {
     protected ValidationStepBase(String name)
     {

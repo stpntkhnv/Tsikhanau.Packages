@@ -5,7 +5,7 @@ using Tsikhanau.Monads.Result;
 
 namespace Tsikhanau.Flow;
 
-public interface IFlow<TInput, TOutput>
+public interface IFlow<TInput, TOutput> where TInput : notnull where TOutput : notnull
 {
     String Name { get; }
     IReadOnlyList<String> StepNames { get; }
@@ -13,7 +13,7 @@ public interface IFlow<TInput, TOutput>
     Task<Result<TOutput, Error>> ExecuteAsync(TInput input, FlowContext context, CancellationToken cancellationToken = default);
 }
 
-public interface IFlow<TOutput>
+public interface IFlow<TOutput> where TOutput : notnull
 {
     String Name { get; }
     IReadOnlyList<String> StepNames { get; }

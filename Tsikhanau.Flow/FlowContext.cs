@@ -1,16 +1,14 @@
-using System.Collections.Concurrent;
-
 namespace Tsikhanau.Flow;
 
 public class FlowContext
 {
-    private readonly ConcurrentDictionary<String, Object> _data;
-    private readonly ConcurrentDictionary<String, Object> _metadata;
+    private readonly Dictionary<String, Object> _data;
+    private readonly Dictionary<String, Object> _metadata;
 
     public FlowContext()
     {
-        _data = new ConcurrentDictionary<String, Object>();
-        _metadata = new ConcurrentDictionary<String, Object>();
+        _data = new Dictionary<String, Object>();
+        _metadata = new Dictionary<String, Object>();
     }
 
     public FlowContext(FlowContext parent) : this()
@@ -19,7 +17,7 @@ public class FlowContext
         {
             _data[kvp.Key] = kvp.Value;
         }
-        
+
         foreach (var kvp in parent._metadata)
         {
             _metadata[kvp.Key] = kvp.Value;
@@ -32,7 +30,7 @@ public class FlowContext
         {
             return typedValue;
         }
-        
+
         return default(T)!;
     }
 
@@ -42,7 +40,7 @@ public class FlowContext
         {
             return typedValue;
         }
-        
+
         return defaultValue;
     }
 
@@ -50,7 +48,7 @@ public class FlowContext
     {
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(value);
-        
+
         _data[key] = value;
     }
 
@@ -61,14 +59,14 @@ public class FlowContext
             value = typedValue;
             return true;
         }
-        
+
         value = default(T)!;
         return false;
     }
 
     public Boolean Contains(String key) => _data.ContainsKey(key);
 
-    public void Remove(String key) => _data.TryRemove(key, out _);
+    public void Remove(String key) => _data.Remove(key);
 
     public void Clear() => _data.Clear();
 
@@ -80,7 +78,7 @@ public class FlowContext
         {
             return typedValue;
         }
-        
+
         return default(T)!;
     }
 
@@ -88,7 +86,7 @@ public class FlowContext
     {
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(value);
-        
+
         _metadata[key] = value;
     }
 
@@ -99,7 +97,7 @@ public class FlowContext
             value = typedValue;
             return true;
         }
-        
+
         value = default(T)!;
         return false;
     }
