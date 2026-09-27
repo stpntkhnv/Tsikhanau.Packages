@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
-using Tsikhanau.Monads.Optional;
 
-namespace Tsikhanau.RailwayExtensions.Optional.Filter;
+namespace Tsikhanau.Railway;
 
 public static partial class OptionalExtensions
 {

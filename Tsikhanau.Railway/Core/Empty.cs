@@ -1,4 +1,4 @@
-namespace Tsikhanau.Foundation.General;
+namespace Tsikhanau.Railway;
 
 public static class Empty
 {

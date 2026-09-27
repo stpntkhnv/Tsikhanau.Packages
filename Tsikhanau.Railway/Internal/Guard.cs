@@ -2,9 +2,9 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace Tsikhanau.Foundation.Validation;
+namespace Tsikhanau.Railway;
 
-public static class Guard
+internal static class Guard
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T AgainstNull<T>([NotNull] T? value, [CallerArgumentExpression(nameof(value))] String paramName = "")

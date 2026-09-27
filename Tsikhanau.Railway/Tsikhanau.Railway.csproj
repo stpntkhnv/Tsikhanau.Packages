@@ -1,23 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <PackageId>Tsikhanau.Foundation</PackageId>
-        <Version>1.0.0</Version>
+        <PackageId>Tsikhanau.Railway</PackageId>
+        <Version>0.1.0</Version>
         <Authors>Stsiapan Tsikhanau</Authors>
-        <Description>Core building blocks for functional programming in .NET - includes Guard, Ensure, Unit type, and clock abstraction</Description>
-        <IncludeBuildOutput>true</IncludeBuildOutput>
-        <TargetFramework>net9.0</TargetFramework>
+        <Description>Result and Optional types with railway-oriented extensions (Bind, Map, Ensure, Tap, Combine, Match) and full async support</Description>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/stpntkhnv/Tsikhanau.Packages</PackageProjectUrl>
         <RepositoryUrl>https://github.com/stpntkhnv/Tsikhanau.Packages</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>functional-programming;utilities;guard;validation;csharp;dotnet</PackageTags>
+        <PackageTags>functional-programming;railway-oriented;result;optional;error-handling;csharp;dotnet</PackageTags>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-        <PackageReleaseNotes>Initial release with Guard, Ensure, Unit type and clock abstraction</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

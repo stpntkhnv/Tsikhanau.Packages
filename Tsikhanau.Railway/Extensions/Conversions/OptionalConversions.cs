@@ -1,9 +1,6 @@
 using System.Runtime.CompilerServices;
-using Tsikhanau.Monads.Either;
-using Tsikhanau.Monads.Optional;
-using Tsikhanau.Monads.Result;
 
-namespace Tsikhanau.RailwayExtensions.Conversions;
+namespace Tsikhanau.Railway;
 
 public static class OptionalConversions
 {
@@ -29,15 +26,5 @@ public static class OptionalConversions
         return optional.HasValue
             ? Result<T, TError>.Success(optional.Value)
             : Result<T, TError>.Failure(errorFactory());
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Either<TLeft, T> ToEither<T, TLeft>(
-        this Optional<T> optional,
-        TLeft left)
-    {
-        return optional.HasValue
-            ? Either<TLeft, T>.FromRight(optional.Value)
-            : Either<TLeft, T>.FromLeft(left);
     }
 }

@@ -1,7 +1,4 @@
-using Tsikhanau.Foundation.General;
-using Tsikhanau.Monads.Result;
-
-namespace Tsikhanau.RailwayExtensions.Result.Combine;
+namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {

@@ -1,7 +1,4 @@
-using Tsikhanau.Monads.Errors;
-using Tsikhanau.Monads.Result;
-
-namespace Tsikhanau.RailwayExtensions.Result.Try;
+namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {

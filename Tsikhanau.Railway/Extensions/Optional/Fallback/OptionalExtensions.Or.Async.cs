@@ -1,6 +1,4 @@
-using Tsikhanau.Monads.Optional;
-
-namespace Tsikhanau.RailwayExtensions.Optional.Fallback;
+namespace Tsikhanau.Railway;
 
 public static partial class OptionalExtensions
 {

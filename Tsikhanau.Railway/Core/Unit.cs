@@ -1,4 +1,4 @@
-namespace Tsikhanau.Foundation.General;
+namespace Tsikhanau.Railway;
 
 public readonly struct Unit : IEquatable<Unit>
 {

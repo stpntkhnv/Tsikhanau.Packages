@@ -1,7 +1,4 @@
-using Tsikhanau.Foundation.General;
-using Tsikhanau.Monads.Errors;
-
-namespace Tsikhanau.Monads.Result;
+namespace Tsikhanau.Railway;
 
 public static class Result
 {

@@ -1,6 +1,4 @@
-using Tsikhanau.Foundation.Validation;
-
-namespace Tsikhanau.Monads.Errors;
+namespace Tsikhanau.Railway;
 
 public class Error : IEquatable<Error>
 {

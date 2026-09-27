@@ -1,6 +1,4 @@
-using Tsikhanau.Foundation.Validation;
-
-namespace Tsikhanau.Monads.Optional;
+namespace Tsikhanau.Railway;
 
 public readonly struct Optional<T> : IEquatable<Optional<T>>
 {

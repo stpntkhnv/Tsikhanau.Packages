@@ -1,4 +1,4 @@
-namespace Tsikhanau.Monads.Errors;
+namespace Tsikhanau.Railway;
 
 public sealed class ValidationError : Error
 {
