@@ -6,3 +6,4 @@ riderModule.iml
 .claude/docs/
 docs/
 nugets/
+BenchmarkDotNet.Artifacts/
