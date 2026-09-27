@@ -4,26 +4,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Structure
 
-This is a .NET 10.0 solution with a single C# library, Tsikhanau.Railway (NuGet package of the same name), for railway-oriented programming:
+This is a .NET 10.0 solution (Tsikhanau.Packages.slnx) around a single C# library, Tsikhanau.Railway (NuGet package of the same name), for railway-oriented programming:
 
 - `Tsikhanau.Railway/Core/`: Result, Optional, Error, ValidationError, Unit, Empty
 - `Tsikhanau.Railway/Extensions/`: extensions for Result and Optional (Bind, Map, Tap, Match, ...) and conversions between them
 - `Tsikhanau.Railway/Internal/`: Guard (internal, argument checks)
+- `Tsikhanau.Railway.Tests/`: xUnit v3 (Microsoft Testing Platform), Shouldly, NSubstitute; folders mirror the library
+- `Tsikhanau.Railway.Benchmarks/`: BenchmarkDotNet with MemoryDiagnoser, one plain-code baseline per class
 
-All types live in the single namespace `Tsikhanau.Railway`.
+All library types live in the single namespace `Tsikhanau.Railway`.
+
+Shared build settings are in `Directory.Build.props`; package versions are managed centrally in `Directory.Packages.props` (PackageReference without Version).
 
 ## Build Commands
 
 ```bash
-# Build entire solution
 dotnet build
-
-# Pack the NuGet package into ./nugets
+dotnet test
+dotnet test --coverage --coverage-output-format cobertura
+dotnet run -c Release --project Tsikhanau.Railway.Benchmarks -- --filter '*'
 dotnet pack Tsikhanau.Railway/Tsikhanau.Railway.csproj -c Release -o nugets
-
-# Pack and publish to NuGet.org (needs NUGET_API_KEY)
-./publish-nugets.sh
 ```
+
+## Public API and Release
+
+- The public API is tracked by PublicApiAnalyzers in `Tsikhanau.Railway/PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt`. A new or changed public member fails the build until the files are updated. Missing entries (RS0016) are added by `dotnet format analyzers Tsikhanau.Railway/Tsikhanau.Railway.csproj --diagnostics RS0016 --severity info`; stale entries (RS0017) are removed by hand.
+- RS0027 (optional parameter overloads) is suppressed in the library csproj until the GetValueOrDefault API is reworked.
+- On release, move the Unshipped entries into Shipped.
+- CI (`.github/workflows/ci.yml`) builds and tests every push and PR. A tag `v<Version>` matching `<Version>` in the library csproj packs and publishes to nuget.org through NuGet trusted publishing (no API key in the repo).
 
 ## Architecture Patterns
 

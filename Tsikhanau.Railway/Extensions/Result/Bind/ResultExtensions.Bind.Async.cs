@@ -2,7 +2,6 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    // bind to sync binder
     public static async Task<Result<TResult, TError>> BindAsync<TData, TError, TResult>(
         this Task<Result<TData, TError>> resultTask,
         Func<TData, Result<TResult, TError>> binder) 
@@ -14,7 +13,6 @@ public static partial class ResultExtensions
         return result.Bind(binder);
     }
     
-    // bind to async binder
     public static async Task<Result<TResult, TError>> BindAsync<TData, TError, TResult>(
         this Task<Result<TData, TError>> resultTask,
         Func<TData, Task<Result<TResult, TError>>> binderAsync) 
@@ -28,7 +26,6 @@ public static partial class ResultExtensions
             : Result<TResult, TError>.Failure(result.Error);
     }
 
-    // convert to task and bind to async binder
     public static async Task<Result<TResult, TError>> BindAsync<TData, TError, TResult>(
         this Result<TData, TError> result,
         Func<TData, Task<Result<TResult, TError>>> binderAsync) 

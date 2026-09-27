@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Tsikhanau.Railway.Benchmarks/Tsikhanau.Railway.Benchmarks.csproj" />
+  <Project Path="Tsikhanau.Railway.Tests/Tsikhanau.Railway.Tests.csproj" />
+  <Project Path="Tsikhanau.Railway/Tsikhanau.Railway.csproj" />
+</Solution>

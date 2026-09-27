@@ -2,7 +2,6 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    // map wrapped value to new value without changing result wrapper
     public static Result<TResult, TError> Map<TData, TError, TResult>(
         this Result<TData, TError> result,
         Func<TData, TResult> mapper) 

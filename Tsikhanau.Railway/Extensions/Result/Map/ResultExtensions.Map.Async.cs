@@ -2,7 +2,6 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    // map with sync mapper function
     public static async Task<Result<TResult, TError>> MapAsync<TData, TError, TResult>(
         this Task<Result<TData, TError>> resultTask,
         Func<TData, TResult> mapper) 
@@ -14,7 +13,6 @@ public static partial class ResultExtensions
         return result.Map(mapper);
     }
     
-    // map with async mapper 
     public static async Task<Result<TResult, TError>> MapAsync<TData, TError, TResult>(
         this Task<Result<TData, TError>> resultTask,
         Func<TData, Task<TResult>> mapperAsync) 
@@ -28,7 +26,6 @@ public static partial class ResultExtensions
             : Result<TResult, TError>.Failure(result.Error);
     }
     
-    // map with converting the current result into a task
     public static async Task<Result<TResult, TError>> MapAsync<TData, TError, TResult>(
         this Result<TData, TError> result,
         Func<TData, Task<TResult>> mapperAsync) 
