@@ -48,7 +48,7 @@ jobs:
             exit 1
           fi
 
-      - run: dotnet pack Tsikhanau.Railway/Tsikhanau.Railway.csproj --configuration Release --output nugets
+      - run: dotnet pack --configuration Release --output nugets
 
       - uses: NuGet/login@v1
         id: login

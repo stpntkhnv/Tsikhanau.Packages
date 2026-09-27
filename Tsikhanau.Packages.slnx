@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="Tsikhanau.Railway.AspNetCore.Tests/Tsikhanau.Railway.AspNetCore.Tests.csproj" />
+  <Project Path="Tsikhanau.Railway.AspNetCore/Tsikhanau.Railway.AspNetCore.csproj" />
   <Project Path="Tsikhanau.Railway.Benchmarks/Tsikhanau.Railway.Benchmarks.csproj" />
   <Project Path="Tsikhanau.Railway.Tests/Tsikhanau.Railway.Tests.csproj" />
   <Project Path="Tsikhanau.Railway/Tsikhanau.Railway.csproj" />

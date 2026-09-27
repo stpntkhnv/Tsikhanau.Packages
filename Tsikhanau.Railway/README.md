@@ -17,6 +17,7 @@ Result and Optional types for railway-oriented programming in .NET: functional e
 - **Where**, **Or**, **OrElse** - filter and fallback for Optional
 - **ToResult**, **ToOptional** - conversions between Result and Optional
 - Async variants for all operations
+- ASP.NET Core integration (ProblemDetails, status codes by ErrorKind) in [Tsikhanau.Railway.AspNetCore](https://www.nuget.org/packages/Tsikhanau.Railway.AspNetCore)
 
 ## Installation
 
