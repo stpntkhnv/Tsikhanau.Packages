@@ -5,9 +5,9 @@ namespace Tsikhanau.Railway.Benchmarks;
 [MemoryDiagnoser]
 public class ResultChainBenchmarks
 {
-    private static readonly Error StartError = Error.Create("START", "Start failed");
-    private static readonly Error NotPositive = Error.Create("NOT_POSITIVE", "Value must be positive");
-    private static readonly Error TooLarge = Error.Create("TOO_LARGE", "Value is too large");
+    private static readonly Error StartError = Error.Failure("START", "Start failed");
+    private static readonly Error NotPositive = Error.Failure("NOT_POSITIVE", "Value must be positive");
+    private static readonly Error TooLarge = Error.Failure("TOO_LARGE", "Value is too large");
 
     private static Int32 _sink;
 
@@ -49,6 +49,6 @@ public class ResultChainBenchmarks
             .Tap(static x => _sink = x)
             .Match(static x => x, static _ => -1);
 
-    private Result<Int32, Error> Start() =>
+    private Result<Int32> Start() =>
         Fails ? Result.Failure<Int32>(StartError) : Result.Success(_input);
 }

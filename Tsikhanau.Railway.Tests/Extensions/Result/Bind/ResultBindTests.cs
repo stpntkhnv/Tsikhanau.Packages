@@ -2,8 +2,8 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ResultBindTests
 {
-    private static readonly Error SourceError = Error.Create("SOURCE", "source failed");
-    private static readonly Error BinderError = Error.Create("BINDER", "binder failed");
+    private static readonly Error SourceError = Error.Failure("source.failed", "Source failed");
+    private static readonly Error BinderError = Error.Failure("binder.failed", "Binder failed");
 
     [Fact]
     public void Bind_Success_ReturnsBinderResult()
@@ -26,7 +26,7 @@ public class ResultBindTests
     [Fact]
     public void Bind_Failure_ReturnsSourceErrorWithoutCallingBinder()
     {
-        var binder = Substitute.For<Func<Int32, Result<String, Error>>>();
+        var binder = Substitute.For<Func<Int32, Result<String>>>();
 
         var result = Result.Failure<Int32>(SourceError).Bind(binder);
 
@@ -46,7 +46,7 @@ public class ResultBindTests
     [Fact]
     public async Task BindAsync_TaskWithSyncBinder_Failure_ReturnsSourceErrorWithoutCallingBinder()
     {
-        var binder = Substitute.For<Func<Int32, Result<Int32, Error>>>();
+        var binder = Substitute.For<Func<Int32, Result<Int32>>>();
 
         var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).BindAsync(binder);
 
@@ -75,7 +75,7 @@ public class ResultBindTests
     [Fact]
     public async Task BindAsync_TaskWithAsyncBinder_Failure_ReturnsSourceErrorWithoutCallingBinder()
     {
-        var binder = Substitute.For<Func<Int32, Task<Result<Int32, Error>>>>();
+        var binder = Substitute.For<Func<Int32, Task<Result<Int32>>>>();
 
         var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).BindAsync(binder);
 
@@ -94,7 +94,7 @@ public class ResultBindTests
     [Fact]
     public async Task BindAsync_ResultWithAsyncBinder_Failure_ReturnsSourceErrorWithoutCallingBinder()
     {
-        var binder = Substitute.For<Func<Int32, Task<Result<Int32, Error>>>>();
+        var binder = Substitute.For<Func<Int32, Task<Result<Int32>>>>();
 
         var result = await Result.Failure<Int32>(SourceError).BindAsync(binder);
 

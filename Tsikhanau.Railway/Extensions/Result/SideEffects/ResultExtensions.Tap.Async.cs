@@ -2,34 +2,39 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    public static async Task<Result<TData, TError>> TapAsync<TData, TError>(
-        this Task<Result<TData, TError>> resultTask,
-        Action<TData> action) where TData : notnull where TError : notnull
+    public static async Task<Result<T>> TapAsync<T>(
+        this Task<Result<T>> resultTask,
+        Action<T> action)
+        where T : notnull
     {
         var result = await resultTask;
         return result.Tap(action);
     }
 
-    public static async Task<Result<TData, TError>> TapAsync<TData, TError>(
-        this Task<Result<TData, TError>> resultTask,
-        Func<TData, Task> actionAsync) where TError : notnull where TData : notnull
+    public static async Task<Result<T>> TapAsync<T>(
+        this Task<Result<T>> resultTask,
+        Func<T, Task> actionAsync)
+        where T : notnull
     {
         var result = await resultTask;
         if (result.IsSuccess)
         {
             await actionAsync(result.Value);
         }
+
         return result;
     }
 
-    public static async Task<Result<TData, TError>> TapAsync<TData, TError>(
-        this Result<TData, TError> result,
-        Func<TData, Task> actionAsync) where TData : notnull where TError : notnull
+    public static async Task<Result<T>> TapAsync<T>(
+        this Result<T> result,
+        Func<T, Task> actionAsync)
+        where T : notnull
     {
         if (result.IsSuccess)
         {
             await actionAsync(result.Value);
         }
+
         return result;
     }
 }

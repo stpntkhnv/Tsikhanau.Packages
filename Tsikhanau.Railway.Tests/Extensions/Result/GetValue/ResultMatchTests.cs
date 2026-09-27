@@ -2,7 +2,7 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ResultMatchTests
 {
-    private static readonly Error SourceError = Error.Create("SOURCE", "source failed");
+    private static readonly Error SourceError = Error.Failure("source.failed", "Source failed");
 
     [Fact]
     public void Match_Success_ReturnsOnSuccessResultWithoutCallingOnFailure()
@@ -22,7 +22,7 @@ public class ResultMatchTests
 
         var result = Result.Failure<Int32>(SourceError).Match(onSuccess, e => e.Code);
 
-        result.ShouldBe("SOURCE");
+        result.ShouldBe("source.failed");
         onSuccess.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -44,7 +44,7 @@ public class ResultMatchTests
 
         var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).MatchAsync(onSuccess, e => e.Code);
 
-        result.ShouldBe("SOURCE");
+        result.ShouldBe("source.failed");
         onSuccess.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -68,7 +68,7 @@ public class ResultMatchTests
         var result = await Task.FromResult(Result.Failure<Int32>(SourceError))
             .MatchAsync(onSuccess, e => Task.FromResult(e.Code));
 
-        result.ShouldBe("SOURCE");
+        result.ShouldBe("source.failed");
         await onSuccess.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -90,7 +90,7 @@ public class ResultMatchTests
 
         var result = await Result.Failure<Int32>(SourceError).MatchAsync(onSuccess, e => Task.FromResult(e.Code));
 
-        result.ShouldBe("SOURCE");
+        result.ShouldBe("source.failed");
         await onSuccess.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 }

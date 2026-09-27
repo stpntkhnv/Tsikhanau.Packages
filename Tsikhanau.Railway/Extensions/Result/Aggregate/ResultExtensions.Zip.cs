@@ -2,19 +2,16 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    public static Result<(TData1, TData2), TError> Zip<TData1, TData2, TError>(
-        this Result<TData1, TError> first,
-        Result<TData2, TError> second)
-        where TData1 : notnull
-        where TData2 : notnull
-        where TError : notnull
+    public static Result<(T1, T2)> Zip<T1, T2>(
+        this Result<T1> first,
+        Result<T2> second)
+        where T1 : notnull
+        where T2 : notnull
     {
         if (first.IsFailure)
-            return Result<(TData1, TData2), TError>.Failure(first.Error);
-
+            return Result<(T1, T2)>.Failure(first.Error);
         if (second.IsFailure)
-            return Result<(TData1, TData2), TError>.Failure(second.Error);
-
-        return Result<(TData1, TData2), TError>.Success((first.Value, second.Value));
+            return Result<(T1, T2)>.Failure(second.Error);
+        return Result<(T1, T2)>.Success((first.Value, second.Value));
     }
 }

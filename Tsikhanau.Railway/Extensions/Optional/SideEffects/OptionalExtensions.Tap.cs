@@ -8,6 +8,7 @@ public static partial class OptionalExtensions
     public static Optional<T> Tap<T>(
         this Optional<T> optional,
         Action<T> action)
+        where T : notnull
     {
         if (optional.HasValue)
         {

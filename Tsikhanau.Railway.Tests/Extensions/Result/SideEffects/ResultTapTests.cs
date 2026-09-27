@@ -2,7 +2,7 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ResultTapTests
 {
-    private static readonly Error SourceError = Error.Create("SOURCE", "source failed");
+    private static readonly Error SourceError = Error.Failure("source.failed", "Source failed");
 
     [Fact]
     public void Tap_Success_CallsActionAndReturnsSourceResult()
@@ -20,11 +20,12 @@ public class ResultTapTests
     public void Tap_Failure_ReturnsSourceResultWithoutCallingAction()
     {
         var action = Substitute.For<Action<Int32>>();
+        var source = Result.Failure<Int32>(SourceError);
 
-        var result = Result.Failure<Int32>(SourceError).Tap(action);
+        var result = source.Tap(action);
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.ShouldBe(source);
+        result.Error.ShouldBe(SourceError);
         action.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -44,11 +45,12 @@ public class ResultTapTests
     public async Task TapAsync_TaskWithSyncAction_Failure_ReturnsSourceResultWithoutCallingAction()
     {
         var action = Substitute.For<Action<Int32>>();
+        var source = Result.Failure<Int32>(SourceError);
 
-        var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).TapAsync(action);
+        var result = await Task.FromResult(source).TapAsync(action);
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.ShouldBe(source);
+        result.Error.ShouldBe(SourceError);
         action.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -68,11 +70,12 @@ public class ResultTapTests
     public async Task TapAsync_TaskWithAsyncAction_Failure_ReturnsSourceResultWithoutCallingAction()
     {
         var action = Substitute.For<Func<Int32, Task>>();
+        var source = Result.Failure<Int32>(SourceError);
 
-        var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).TapAsync(action);
+        var result = await Task.FromResult(source).TapAsync(action);
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.ShouldBe(source);
+        result.Error.ShouldBe(SourceError);
         await action.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -92,11 +95,12 @@ public class ResultTapTests
     public async Task TapAsync_ResultWithAsyncAction_Failure_ReturnsSourceResultWithoutCallingAction()
     {
         var action = Substitute.For<Func<Int32, Task>>();
+        var source = Result.Failure<Int32>(SourceError);
 
-        var result = await Result.Failure<Int32>(SourceError).TapAsync(action);
+        var result = await source.TapAsync(action);
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.ShouldBe(source);
+        result.Error.ShouldBe(SourceError);
         await action.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 }

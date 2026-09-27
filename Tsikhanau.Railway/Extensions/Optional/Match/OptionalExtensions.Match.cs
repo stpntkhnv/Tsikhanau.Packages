@@ -9,6 +9,7 @@ public static partial class OptionalExtensions
         this Optional<T> optional,
         Func<T, TResult> onSome,
         Func<TResult> onNone)
+        where T : notnull
     {
         return optional.HasValue
             ? onSome(optional.Value)

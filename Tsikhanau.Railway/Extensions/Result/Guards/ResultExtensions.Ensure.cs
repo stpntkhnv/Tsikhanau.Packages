@@ -2,23 +2,31 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    public static Result<TData, TError> Ensure<TData, TError>(
-        this Result<TData, TError> result,
-        Func<TData, Boolean> predicate,
-        TError error)
-        where TData : notnull
-        where TError : notnull
+    public static Result<T> Ensure<T>(
+        this Result<T> result,
+        Func<T, Boolean> predicate,
+        Error error)
+        where T : notnull
     {
-        if (result.IsFailure)
+        if (result.IsFailure || predicate(result.Value))
         {
             return result;
         }
 
-        if (predicate(result.Value))
+        return Result<T>.Failure(error);
+    }
+
+    public static Result<T> Ensure<T>(
+        this Result<T> result,
+        Func<T, Boolean> predicate,
+        Func<T, Error> errorFactory)
+        where T : notnull
+    {
+        if (result.IsFailure || predicate(result.Value))
         {
             return result;
         }
 
-        return Result<TData, TError>.Failure(error);
+        return Result<T>.Failure(errorFactory(result.Value));
     }
 }

@@ -2,12 +2,11 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    public static TOutput Match<TData, TError, TOutput>(
-        this Result<TData, TError> result,
-        Func<TData, TOutput> onSuccess,
-        Func<TError, TOutput> onFailure)
-        where TData : notnull
-        where TError : notnull
+    public static TOutput Match<T, TOutput>(
+        this Result<T> result,
+        Func<T, TOutput> onSuccess,
+        Func<Error, TOutput> onFailure)
+        where T : notnull
     {
         return result.IsSuccess
             ? onSuccess(result.Value)

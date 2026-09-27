@@ -2,7 +2,7 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ResultConversionsTests
 {
-    private static readonly Error SourceError = Error.Create("SOURCE", "source failed");
+    private static readonly Error SourceError = Error.Failure("source.failed", "Source failed");
 
     [Fact]
     public void ToOptional_Success_ReturnsSomeWithValue()
@@ -22,9 +22,9 @@ public class ResultConversionsTests
     }
 
     [Fact]
-    public void ToOptional_FailureWithCustomErrorType_ReturnsNone()
+    public void ToOptional_Default_ReturnsNone()
     {
-        var optional = Result<Int32, String>.Failure("failed").ToOptional();
+        var optional = default(Result<Int32>).ToOptional();
 
         optional.IsNone.ShouldBeTrue();
     }

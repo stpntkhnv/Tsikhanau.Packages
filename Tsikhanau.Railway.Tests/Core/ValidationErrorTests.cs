@@ -2,213 +2,222 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ValidationErrorTests
 {
-    private const String EmptyMessagesError = "ValidationError must contain at least one not empty message";
-
-    public static TheoryData<String[]> BlankMessageSets => new()
-    {
-        Array.Empty<String>(),
-        new[] { "", " ", "\t" },
-        new[] { null!, "" }
-    };
-
     [Fact]
-    public void From_Messages_KeepsMessagesInOrder()
+    public void Validation_FieldAndMessage_ReturnsValidationError()
     {
-        var error = ValidationError.From(new[] { "first", "second", "third" });
+        var error = Error.Validation("name", "Required");
 
-        error.Messages.ShouldBe(new[] { "first", "second", "third" });
+        error.ShouldBeOfType<ValidationError>();
+        error.Kind.ShouldBe(ErrorKind.Validation);
+        error.Code.ShouldBe("validation");
+        error.Message.ShouldBe("name: Required");
+        error.FieldErrors.ShouldBe([new FieldError("name", "Required")]);
+        error.Inner.ShouldBeNull();
+        error.Metadata.ShouldBeNull();
     }
 
     [Fact]
-    public void From_Messages_UsesValidationCodeWithoutInnerError()
+    public void Validation_NullField_ThrowsArgumentNullException()
     {
-        var error = ValidationError.From(new[] { "first" });
+        var exception = Should.Throw<ArgumentNullException>(() => Error.Validation(null!, "Required"));
 
-        error.Code.ShouldBe("VALIDATION");
-        error.InnerError.ShouldBeNull();
+        exception.ParamName.ShouldBe("field");
     }
 
     [Fact]
-    public void From_Messages_JoinsMessageWithSemicolonAndNewLine()
+    public void For_FieldAndMessage_ReturnsSingleFieldError()
     {
-        var error = ValidationError.From(new[] { "first", "second", "third" });
+        var error = ValidationError.For("name", "Required");
 
-        error.Message.ShouldBe("first;\nsecond;\nthird");
+        error.Kind.ShouldBe(ErrorKind.Validation);
+        error.Code.ShouldBe(ValidationError.DefaultCode);
+        error.Message.ShouldBe("name: Required");
+        error.FieldErrors.ShouldBe([new FieldError("name", "Required")]);
     }
 
     [Fact]
-    public void From_MessagesWithBlanks_FiltersBlankMessages()
+    public void For_EmptyField_UsesMessageOnly()
     {
-        var error = ValidationError.From(new[] { "first", null!, "", " ", "\t", "second" });
+        var error = ValidationError.For("", "Object is invalid");
 
-        error.Messages.ShouldBe(new[] { "first", "second" });
-        error.Message.ShouldBe("first;\nsecond");
-    }
-
-    [Fact]
-    public void From_DuplicateMessages_KeepsFirstOccurrences()
-    {
-        var error = ValidationError.From(new[] { "b", "a", "b", "a", "c" });
-
-        error.Messages.ShouldBe(new[] { "b", "a", "c" });
-    }
-
-    [Fact]
-    public void From_MessagesDifferingByCaseOrPadding_KeepsAll()
-    {
-        var error = ValidationError.From(new[] { "a", "A", " a" });
-
-        error.Messages.ShouldBe(new[] { "a", "A", " a" });
-    }
-
-    [Theory]
-    [MemberData(nameof(BlankMessageSets))]
-    public void From_NoNonBlankMessages_ThrowsArgumentException(String[] messages)
-    {
-        var exception = Should.Throw<ArgumentException>(() => ValidationError.From(messages));
-
-        exception.ShouldBeOfType<ArgumentException>();
-        exception.Message.ShouldBe(EmptyMessagesError);
-        exception.ParamName.ShouldBeNull();
-    }
-
-    [Fact]
-    public void From_NullMessages_ThrowsArgumentNullException()
-    {
-        Should.Throw<ArgumentNullException>(() => ValidationError.From((IEnumerable<String>)null!));
-    }
-
-    [Fact]
-    public void From_Errors_UsesErrorMessages()
-    {
-        var error = ValidationError.From(new[] { Error.Create("A", "first"), Error.Create("B", "second") });
-
-        error.Messages.ShouldBe(new[] { "first", "second" });
-        error.Message.ShouldBe("first;\nsecond");
-        error.Code.ShouldBe("VALIDATION");
-        error.InnerError.ShouldBeNull();
-    }
-
-    [Fact]
-    public void From_ErrorsWithDuplicateMessages_KeepsFirstOccurrencesIgnoringCodes()
-    {
-        var error = ValidationError.From(new[]
-        {
-            Error.Create("A", "same"),
-            Error.Create("B", "same"),
-            Error.Create("C", "other")
-        });
-
-        error.Messages.ShouldBe(new[] { "same", "other" });
-    }
-
-    [Fact]
-    public void From_ErrorsWithBlankMessages_FiltersBlankMessages()
-    {
-        var error = ValidationError.From(new[]
-        {
-            Error.FromException(new Exception(" ")),
-            Error.Create("A", "kept"),
-            Error.FromException(new Exception(""))
-        });
-
-        error.Messages.ShouldBe(new[] { "kept" });
-    }
-
-    [Fact]
-    public void From_ValidationErrors_DoesNotFlattenMessages()
-    {
-        var error = ValidationError.From(new Error[]
-        {
-            ValidationError.From(new[] { "a", "b" }),
-            Error.Create("C", "c")
-        });
-
-        error.Messages.ShouldBe(new[] { "a;\nb", "c" });
-    }
-
-    [Fact]
-    public void From_NoErrors_ThrowsArgumentException()
-    {
-        var exception = Should.Throw<ArgumentException>(() => ValidationError.From(Array.Empty<Error>()));
-
-        exception.ShouldBeOfType<ArgumentException>();
-        exception.Message.ShouldBe(EmptyMessagesError);
-    }
-
-    [Fact]
-    public void From_ErrorsWithOnlyBlankMessages_ThrowsArgumentException()
-    {
-        var errors = new[] { Error.FromException(new Exception(" ")), Error.FromException(new Exception("")) };
-
-        var exception = Should.Throw<ArgumentException>(() => ValidationError.From(errors));
-
-        exception.ShouldBeOfType<ArgumentException>();
-        exception.Message.ShouldBe(EmptyMessagesError);
-    }
-
-    [Fact]
-    public void From_ErrorsWithNullElement_ThrowsNullReferenceException()
-    {
-        var errors = new[] { Error.Create("A", "first"), null! };
-
-        Should.Throw<NullReferenceException>(() => ValidationError.From(errors));
-    }
-
-    [Fact]
-    public void From_NullErrors_ThrowsArgumentNullException()
-    {
-        Should.Throw<ArgumentNullException>(() => ValidationError.From((IEnumerable<Error>)null!));
-    }
-
-    [Fact]
-    public void Single_Message_ReturnsErrorWithOneMessage()
-    {
-        var error = ValidationError.Single("invalid");
-
-        error.Messages.ShouldBe(new[] { "invalid" });
-        error.Message.ShouldBe("invalid");
-        error.Code.ShouldBe("VALIDATION");
-        error.InnerError.ShouldBeNull();
+        error.Message.ShouldBe("Object is invalid");
+        error.FieldErrors.ShouldBe([new FieldError("", "Object is invalid")]);
     }
 
     [Theory]
     [InlineData("")]
     [InlineData(" ")]
-    public void Single_BlankMessage_DoesNotThrow(String message)
+    public void For_EmptyOrWhiteSpaceMessage_ThrowsArgumentException(String message)
     {
-        var error = ValidationError.Single(message);
+        var exception = Should.Throw<ArgumentException>(() => ValidationError.For("name", message));
 
-        error.Messages.ShouldBe(new[] { message });
-        error.Message.ShouldBe(message);
+        exception.ShouldBeOfType<ArgumentException>();
+        exception.ParamName.ShouldBe("message");
     }
 
     [Fact]
-    public void Single_Null_KeepsNullMessage()
+    public void From_FieldErrors_KeepsOrderAndJoinsMessage()
     {
-        var error = ValidationError.Single(null!);
+        FieldError[] fieldErrors =
+        [
+            new("name", "Required"),
+            new("", "Object is invalid"),
+            new("age", "Too young")
+        ];
 
-        error.Messages.Count.ShouldBe(1);
-        error.Messages[0].ShouldBeNull();
-        error.Message.ShouldBe("");
+        var error = ValidationError.From(fieldErrors);
+
+        error.Kind.ShouldBe(ErrorKind.Validation);
+        error.Code.ShouldBe("validation");
+        error.FieldErrors.ShouldBe(fieldErrors);
+        error.Message.ShouldBe("name: Required; Object is invalid; age: Too young");
     }
 
     [Fact]
-    public void Equals_ErrorWithSameCodeAndMessage_ReturnsTrue()
+    public void From_SourceChangedAfterwards_KeepsOriginalFieldErrors()
     {
-        var validationError = ValidationError.From(new[] { "a", "b" });
-        var error = Error.Create("VALIDATION", "a;\nb");
+        var source = new List<FieldError> { new("name", "Required") };
 
-        validationError.Equals(error).ShouldBeTrue();
-        error.Equals(validationError).ShouldBeTrue();
-        (ValidationError.Single("invalid") == Error.Validation("invalid")).ShouldBeTrue();
+        var error = ValidationError.From(source);
+        source.Add(new FieldError("age", "Too young"));
+
+        error.FieldErrors.ShouldBe([new FieldError("name", "Required")]);
     }
 
     [Fact]
-    public void ToString_MultipleMessages_FormatsCodeAndJoinedMessage()
+    public void From_Empty_ThrowsArgumentException()
     {
-        var text = ValidationError.From(new[] { "a", "b" }).ToString();
+        var exception = Should.Throw<ArgumentException>(() => ValidationError.From([]));
 
-        text.ShouldBe("[VALIDATION] a;\nb");
+        exception.ShouldBeOfType<ArgumentException>();
+        exception.ParamName.ShouldBe("fieldErrors");
+    }
+
+    [Fact]
+    public void From_DefaultFieldError_ThrowsArgumentException()
+    {
+        FieldError[] fieldErrors = [new("name", "Required"), default];
+
+        var exception = Should.Throw<ArgumentException>(() => ValidationError.From(fieldErrors));
+
+        exception.ShouldBeOfType<ArgumentException>();
+        exception.ParamName.ShouldBe("fieldErrors");
+    }
+
+    [Fact]
+    public void From_Null_ThrowsArgumentNullException()
+    {
+        var exception = Should.Throw<ArgumentNullException>(() => ValidationError.From(null!));
+
+        exception.ParamName.ShouldBe("fieldErrors");
+    }
+
+    [Fact]
+    public void Merge_OtherError_AppendsFieldErrorsInOrder()
+    {
+        var first = ValidationError.From([new("name", "Required"), new("email", "Invalid")]);
+        var second = ValidationError.For("age", "Too young");
+
+        var merged = first.Merge(second);
+
+        merged.FieldErrors.ShouldBe([new FieldError("name", "Required"), new FieldError("email", "Invalid"), new FieldError("age", "Too young")]);
+        merged.Message.ShouldBe("name: Required; email: Invalid; age: Too young");
+        merged.Kind.ShouldBe(ErrorKind.Validation);
+        merged.Code.ShouldBe("validation");
+    }
+
+    [Fact]
+    public void Merge_OtherError_DoesNotChangeSources()
+    {
+        var first = ValidationError.For("name", "Required");
+        var second = ValidationError.For("age", "Too young");
+
+        _ = first.Merge(second);
+
+        first.FieldErrors.ShouldBe([new FieldError("name", "Required")]);
+        second.FieldErrors.ShouldBe([new FieldError("age", "Too young")]);
+    }
+
+    [Fact]
+    public void Merge_Null_ThrowsArgumentNullException()
+    {
+        var error = ValidationError.For("name", "Required");
+
+        var exception = Should.Throw<ArgumentNullException>(() => error.Merge(null!));
+
+        exception.ParamName.ShouldBe("other");
+    }
+
+    [Fact]
+    public void Equals_SameFieldErrors_ReturnsTrue()
+    {
+        var left = ValidationError.From([new("name", "Required"), new("age", "Too young")]);
+        var right = ValidationError.From([new("name", "Required"), new("age", "Too young")]);
+
+        left.Equals(right).ShouldBeTrue();
+        (left == right).ShouldBeTrue();
+        (left != right).ShouldBeFalse();
+        left.GetHashCode().ShouldBe(right.GetHashCode());
+    }
+
+    [Fact]
+    public void Equals_SameFieldErrorsAsError_ReturnsTrue()
+    {
+        Error left = ValidationError.For("name", "Required");
+        Error right = ValidationError.For("name", "Required");
+
+        left.Equals(right).ShouldBeTrue();
+        left.Equals((Object)right).ShouldBeTrue();
+        (left == right).ShouldBeTrue();
+        left.GetHashCode().ShouldBe(right.GetHashCode());
+    }
+
+    [Fact]
+    public void Equals_DifferentFieldErrors_ReturnsFalse()
+    {
+        var left = ValidationError.From([new("name", "Required"), new("age", "Too young")]);
+        var right = ValidationError.From([new("age", "Too young"), new("name", "Required")]);
+
+        left.Equals(right).ShouldBeFalse();
+        (left == right).ShouldBeFalse();
+        (left != right).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Equals_SameMessageDifferentFieldErrors_ReturnsFalse()
+    {
+        var left = ValidationError.For("name", "Required");
+        var right = ValidationError.For("", "name: Required");
+
+        left.Message.ShouldBe(right.Message);
+        left.Equals(right).ShouldBeFalse();
+        (left == right).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Equals_PlainErrorWithSameFields_ReturnsFalse()
+    {
+        var validationError = ValidationError.For("name", "Required");
+        var error = new Error(ErrorKind.Validation, "validation", "name: Required");
+
+        validationError.Equals(error).ShouldBeFalse();
+        error.Equals(validationError).ShouldBeFalse();
+        (error == validationError).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ToString_MultipleFieldErrors_FormatsCodeAndJoinedMessage()
+    {
+        var text = ValidationError.From([new("name", "Required"), new("age", "Too young")]).ToString();
+
+        text.ShouldBe("[validation] name: Required; age: Too young");
+    }
+
+    [Fact]
+    public void FieldErrors_CannotBeCastToMutableArray()
+    {
+        var error = ValidationError.For("name", "Required");
+
+        (error.FieldErrors is FieldError[]).ShouldBeFalse();
     }
 }

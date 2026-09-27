@@ -2,17 +2,18 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ResultTapErrorTests
 {
-    private static readonly Error SourceError = Error.Create("SOURCE", "source failed");
+    private static readonly Error SourceError = Error.Failure("source.failed", "Source failed");
 
     [Fact]
     public void TapError_Failure_CallsActionAndReturnsSourceResult()
     {
         var action = Substitute.For<Action<Error>>();
+        var source = Result.Failure<Int32>(SourceError);
 
-        var result = Result.Failure<Int32>(SourceError).TapError(action);
+        var result = source.TapError(action);
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.ShouldBe(source);
+        result.Error.ShouldBe(SourceError);
         action.Received(1).Invoke(SourceError);
     }
 
@@ -32,11 +33,12 @@ public class ResultTapErrorTests
     public async Task TapErrorAsync_TaskWithSyncAction_Failure_CallsActionAndReturnsSourceResult()
     {
         var action = Substitute.For<Action<Error>>();
+        var source = Result.Failure<Int32>(SourceError);
 
-        var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).TapErrorAsync(action);
+        var result = await Task.FromResult(source).TapErrorAsync(action);
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.ShouldBe(source);
+        result.Error.ShouldBe(SourceError);
         action.Received(1).Invoke(SourceError);
     }
 
@@ -56,11 +58,12 @@ public class ResultTapErrorTests
     public async Task TapErrorAsync_TaskWithAsyncAction_Failure_CallsActionAndReturnsSourceResult()
     {
         var action = Substitute.For<Func<Error, Task>>();
+        var source = Result.Failure<Int32>(SourceError);
 
-        var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).TapErrorAsync(action);
+        var result = await Task.FromResult(source).TapErrorAsync(action);
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.ShouldBe(source);
+        result.Error.ShouldBe(SourceError);
         await action.Received(1).Invoke(SourceError);
     }
 
@@ -80,11 +83,12 @@ public class ResultTapErrorTests
     public async Task TapErrorAsync_ResultWithAsyncAction_Failure_CallsActionAndReturnsSourceResult()
     {
         var action = Substitute.For<Func<Error, Task>>();
+        var source = Result.Failure<Int32>(SourceError);
 
-        var result = await Result.Failure<Int32>(SourceError).TapErrorAsync(action);
+        var result = await source.TapErrorAsync(action);
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.ShouldBe(source);
+        result.Error.ShouldBe(SourceError);
         await action.Received(1).Invoke(SourceError);
     }
 

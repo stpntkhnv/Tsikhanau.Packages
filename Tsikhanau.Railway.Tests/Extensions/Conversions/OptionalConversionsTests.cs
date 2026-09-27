@@ -2,7 +2,7 @@ namespace Tsikhanau.Railway.Tests;
 
 public class OptionalConversionsTests
 {
-    private static readonly Error MissingError = Error.Create("MISSING", "value missing");
+    private static readonly Error MissingError = Error.NotFound("value.missing", "Value missing");
 
     [Fact]
     public void ToResult_Some_WithError_ReturnsSuccessWithValue()
@@ -23,12 +23,22 @@ public class OptionalConversionsTests
     }
 
     [Fact]
-    public void ToResult_None_WithCustomErrorType_ReturnsFailureWithError()
+    public void ToResult_None_WithErrorSubclass_KeepsErrorInstance()
     {
-        var result = Optional<Int32>.None().ToResult("missing");
+        var error = Error.Validation("name", "Name is required");
 
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBe("missing");
+        var result = Optional<String>.None().ToResult(error);
+
+        result.Error.ShouldBeSameAs(error);
+        result.Error.ShouldBeOfType<ValidationError>();
+    }
+
+    [Fact]
+    public void ToResult_None_WithNullError_ThrowsArgumentNullException()
+    {
+        var optional = Optional<Int32>.None();
+
+        Should.Throw<ArgumentNullException>(() => optional.ToResult((Error)null!));
     }
 
     [Fact]
@@ -54,5 +64,13 @@ public class OptionalConversionsTests
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(MissingError);
         errorFactory.Received(1).Invoke();
+    }
+
+    [Fact]
+    public void ToResult_None_ErrorFactoryReturnsNull_ThrowsArgumentNullException()
+    {
+        var optional = Optional<Int32>.None();
+
+        Should.Throw<ArgumentNullException>(() => optional.ToResult(() => null!));
     }
 }

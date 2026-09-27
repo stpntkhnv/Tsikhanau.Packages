@@ -2,10 +2,10 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ResultStaticTests
 {
-    private static readonly Error FailError = Error.Create("FAIL", "failed");
+    private static readonly Error FailError = Error.Failure("fail", "Failed");
 
     [Fact]
-    public void Success_Data_ReturnsSuccessWithData()
+    public void Success_Value_ReturnsSuccessWithValue()
     {
         var result = Result.Success(5);
 
@@ -14,7 +14,7 @@ public class ResultStaticTests
     }
 
     [Fact]
-    public void Success_NullData_ThrowsArgumentNullException()
+    public void Success_NullValue_ThrowsArgumentNullException()
     {
         var exception = Should.Throw<ArgumentNullException>(() => Result.Success<String>(null!));
 
@@ -24,7 +24,7 @@ public class ResultStaticTests
     [Fact]
     public void Success_NoArguments_ReturnsUnitSuccess()
     {
-        var result = Result.Success();
+        Result<Unit> result = Result.Success();
 
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(Unit.Value);
@@ -48,64 +48,19 @@ public class ResultStaticTests
     }
 
     [Fact]
-    public void Failure_NoArguments_ReturnsUnknownError()
+    public void Failure_ErrorWithoutTypeArgument_ReturnsUnitFailure()
     {
-        var result = Result.Failure();
+        Result<Unit> result = Result.Failure(FailError);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(Error.Unknown);
+        result.Error.ShouldBeSameAs(FailError);
     }
 
     [Fact]
-    public void ToResult_PredicateReturnsTrue_ReturnsSuccessWithData()
+    public void Failure_NullErrorWithoutTypeArgument_ThrowsArgumentNullException()
     {
-        var predicate = Substitute.For<Func<Int32, Boolean>>();
-        predicate.Invoke(5).Returns(true);
+        var exception = Should.Throw<ArgumentNullException>(() => Result.Failure(null!));
 
-        var result = 5.ToResult(predicate);
-
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldBe(5);
-        predicate.Received(1).Invoke(5);
-    }
-
-    [Fact]
-    public void ToResult_PredicateReturnsFalse_ReturnsUnknownError()
-    {
-        var predicate = Substitute.For<Func<Int32, Boolean>>();
-        predicate.Invoke(5).Returns(false);
-
-        var result = 5.ToResult(predicate);
-
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(Error.Unknown);
-        predicate.Received(1).Invoke(5);
-    }
-
-    [Fact]
-    public void ToResult_NullPredicate_ThrowsNullReferenceException()
-    {
-        Should.Throw<NullReferenceException>(() => 5.ToResult(null!));
-    }
-
-    [Fact]
-    public void ToResult_NullDataAndPredicateReturnsTrue_ThrowsArgumentNullException()
-    {
-        String data = null!;
-
-        var exception = Should.Throw<ArgumentNullException>(() => data.ToResult(_ => true));
-
-        exception.ParamName.ShouldBe("value");
-    }
-
-    [Fact]
-    public void ToResult_NullDataAndPredicateReturnsFalse_ReturnsUnknownError()
-    {
-        String data = null!;
-
-        var result = data.ToResult(_ => false);
-
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(Error.Unknown);
+        exception.ParamName.ShouldBe("error");
     }
 }

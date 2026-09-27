@@ -2,7 +2,7 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ResultMapTests
 {
-    private static readonly Error SourceError = Error.Create("SOURCE", "source failed");
+    private static readonly Error SourceError = Error.Failure("source.failed", "Source failed");
 
     [Fact]
     public void Map_Success_ReturnsMappedValue()
@@ -25,7 +25,7 @@ public class ResultMapTests
         var result = Result.Failure<Int32>(SourceError).Map(mapper);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.Error.ShouldBe(SourceError);
         mapper.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -60,7 +60,7 @@ public class ResultMapTests
         var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).MapAsync(mapper);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.Error.ShouldBe(SourceError);
         mapper.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -96,7 +96,7 @@ public class ResultMapTests
         var result = await Task.FromResult(Result.Failure<Int32>(SourceError)).MapAsync(mapper);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.Error.ShouldBe(SourceError);
         await mapper.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 
@@ -132,7 +132,7 @@ public class ResultMapTests
         var result = await Result.Failure<Int32>(SourceError).MapAsync(mapper);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBeSameAs(SourceError);
+        result.Error.ShouldBe(SourceError);
         await mapper.DidNotReceiveWithAnyArgs().Invoke(default);
     }
 

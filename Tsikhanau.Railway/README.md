@@ -4,15 +4,15 @@ Result and Optional types for railway-oriented programming in .NET: functional e
 
 ## Features
 
-- **Result&lt;TData, TError&gt;** - success or failure
+- **Result&lt;T&gt;** - success with a value or failure with an `Error`
 - **Optional&lt;T&gt;** - a value or nothing
-- **Error**, **ValidationError** - errors with codes, messages and inner errors
-- **Unit** - "no value" for operations that return nothing
+- **Error** - record with `Kind` (Failure, Unexpected, Validation, NotFound, Conflict, Unauthorized, Forbidden), `Code`, `Message`, `Inner` and `Metadata`; derive your own errors from it
+- **ValidationError** - field errors, merged automatically by `CombineAll`
 - **Bind**, **Map**, **MapError** - chain and transform
-- **Ensure** - conditional checks
-- **Tap**, **TapError**, **OnSuccess**, **OnFailure** - side effects
-- **Combine**, **CombineAll**, **Zip**, **FirstSuccess** - work with several results
-- **Try** - turn exceptions into errors
+- **Ensure** - conditional checks with a fixed error or an error built from the value
+- **Tap**, **TapError** - side effects
+- **Result.Combine**, **Result.CombineAll**, **Result.FirstSuccess**, **Zip** - work with several results
+- **Result.Try** - turn exceptions into errors
 - **Match**, **GetValueOrDefault** - get the value out
 - **Where**, **Or**, **OrElse** - filter and fallback for Optional
 - **ToResult**, **ToOptional** - conversions between Result and Optional
@@ -29,27 +29,36 @@ dotnet add package Tsikhanau.Railway
 ```csharp
 using Tsikhanau.Railway;
 
-public Result<User, Error> GetUser(int id)
-{
-    if (id <= 0)
-        return Error.Validation("Invalid user ID");
+public sealed record UserBannedError(DateTime Until)
+    : Error(ErrorKind.Forbidden, "user.banned", $"User is banned until {Until:yyyy-MM-dd}");
 
-    var user = database.Find(id);
+public async Task<Result<User>> GetUser(Guid id)
+{
+    var user = await db.Users.FindAsync(id);
     if (user is null)
-        return Error.Create("NOT_FOUND", "User not found");
+        return Error.NotFound("user.not_found", "User not found");
+
+    if (user.BannedUntil > DateTime.UtcNow)
+        return new UserBannedError(user.BannedUntil.Value);
 
     return user;
 }
 
-var result = GetUser(123)
-    .Ensure(u => u.IsActive, Error.Validation("User inactive"))
-    .Map(u => u.DisplayName)
-    .Tap(name => logger.LogInformation("Retrieved: {Name}", name))
-    .MapError(err => err.WithContext("USER_ERROR", "Failed to load user"));
+var message = await GetUser(id)
+    .EnsureAsync(u => u.IsActive, u => Error.Forbidden("user.inactive", $"{u.Name} is inactive"))
+    .MapAsync(u => u.DisplayName)
+    .TapAsync(name => logger.LogInformation("Retrieved: {Name}", name))
+    .MatchAsync(
+        onSuccess: name => $"Hello, {name}",
+        onFailure: error => error switch
+        {
+            UserBannedError banned => $"Come back after {banned.Until:d}",
+            _ => error.Message
+        });
 
-var message = result.Match(
-    onSuccess: name => $"Hello, {name}",
-    onFailure: error => error.GetFullMessage());
+var validated = Result.CombineAll(
+    ValidateEmail(request.Email),
+    ValidateName(request.Name));
 ```
 
 ## License

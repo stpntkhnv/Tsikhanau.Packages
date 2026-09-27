@@ -2,11 +2,10 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    public static Result<TData, TError> Tap<TData, TError>(
-        this Result<TData, TError> result,
-        Action<TData> action)
-        where TData : notnull
-        where TError : notnull
+    public static Result<T> Tap<T>(
+        this Result<T> result,
+        Action<T> action)
+        where T : notnull
     {
         if (result.IsSuccess)
         {

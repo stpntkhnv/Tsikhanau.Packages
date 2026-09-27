@@ -66,6 +66,24 @@ public class OptionalTests
     }
 
     [Fact]
+    public void GetValueOrDefault_SomeWithoutArguments_ReturnsValue()
+    {
+        var value = Optional<String>.Some("text").GetValueOrDefault();
+
+        value.ShouldBe("text");
+    }
+
+    [Fact]
+    public void GetValueOrDefault_NoneWithoutArguments_ReturnsTypeDefault()
+    {
+        var number = Optional<Int32>.None().GetValueOrDefault();
+        var text = Optional<String>.None().GetValueOrDefault();
+
+        number.ShouldBe(0);
+        text.ShouldBeNull();
+    }
+
+    [Fact]
     public void GetValueOrDefault_SomeWithDefaultValue_ReturnsValue()
     {
         var value = Optional<Int32>.Some(5).GetValueOrDefault(10);
@@ -79,16 +97,6 @@ public class OptionalTests
         var value = Optional<Int32>.None().GetValueOrDefault(10);
 
         value.ShouldBe(10);
-    }
-
-    [Fact]
-    public void GetValueOrDefault_NoneWithoutArguments_ReturnsTypeDefault()
-    {
-        var number = Optional<Int32>.None().GetValueOrDefault();
-        var text = Optional<String>.None().GetValueOrDefault();
-
-        number.ShouldBe(0);
-        text.ShouldBeNull();
     }
 
     [Fact]
@@ -125,30 +133,6 @@ public class OptionalTests
         var exception = Should.Throw<ArgumentNullException>(() => optional.GetValueOrDefault(factory));
 
         exception.ParamName.ShouldBe("defaultValueFactory");
-    }
-
-    [Fact]
-    public void ToNullable_Some_ReturnsValue()
-    {
-        var value = Optional<String>.Some("text").ToNullable();
-
-        value.ShouldBe("text");
-    }
-
-    [Fact]
-    public void ToNullable_ReferenceTypeNone_ReturnsNull()
-    {
-        var value = Optional<String>.None().ToNullable();
-
-        value.ShouldBeNull();
-    }
-
-    [Fact]
-    public void ToNullable_ValueTypeNone_ReturnsTypeDefault()
-    {
-        var value = Optional<Int32>.None().ToNullable();
-
-        value.ShouldBe(0);
     }
 
     [Fact]
@@ -275,30 +259,6 @@ public class OptionalTests
         Optional<String> optional = value;
 
         optional.IsNone.ShouldBeTrue();
-    }
-
-    [Fact]
-    public void ImplicitConversion_SomeToValue_ReturnsValue()
-    {
-        String? value = Optional<String>.Some("text");
-
-        value.ShouldBe("text");
-    }
-
-    [Fact]
-    public void ImplicitConversion_NoneToReferenceType_ReturnsNull()
-    {
-        String? value = Optional<String>.None();
-
-        value.ShouldBeNull();
-    }
-
-    [Fact]
-    public void ImplicitConversion_NoneToValueType_ReturnsTypeDefault()
-    {
-        Int32 value = Optional<Int32>.None();
-
-        value.ShouldBe(0);
     }
 
     [Fact]

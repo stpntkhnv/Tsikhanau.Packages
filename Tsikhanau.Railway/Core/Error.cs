@@ -1,111 +1,131 @@
 namespace Tsikhanau.Railway;
 
-public class Error : IEquatable<Error>
+public record Error
 {
-    protected Error(String code, String message, Error? innerError = null)
+    public Error(ErrorKind kind, String code, String message)
     {
-        Code = code;
-        Message = message;
-        InnerError = innerError;
+        Kind = kind;
+        Code = Guard.AgainstNullOrWhiteSpace(code);
+        Message = Guard.AgainstNullOrWhiteSpace(message);
     }
+
+    public ErrorKind Kind { get; }
 
     public String Code { get; }
 
     public String Message { get; }
 
-    public Error? InnerError { get; }
+    public Error? Inner { get; init; }
 
-    public static Error Create(String code, String message)
-    {
-        Guard.AgainstNullOrWhiteSpace(code);
-        Guard.AgainstNullOrWhiteSpace(message);
-        return new Error(code, message);
-    }
+    public IReadOnlyDictionary<String, Object?>? Metadata { get; init; }
 
-    public static Error Create(String code, String message, Error innerError)
-    {
-        Guard.AgainstNullOrWhiteSpace(code);
-        Guard.AgainstNullOrWhiteSpace(message);
-        Guard.AgainstNull(innerError);
-        return new Error(code, message, innerError);
-    }
+    public static Error Failure(String code, String message) => new(ErrorKind.Failure, code, message);
+
+    public static Error Unexpected(String code, String message) => new(ErrorKind.Unexpected, code, message);
+
+    public static Error NotFound(String code, String message) => new(ErrorKind.NotFound, code, message);
+
+    public static Error Conflict(String code, String message) => new(ErrorKind.Conflict, code, message);
+
+    public static Error Unauthorized(String code, String message) => new(ErrorKind.Unauthorized, code, message);
+
+    public static Error Forbidden(String code, String message) => new(ErrorKind.Forbidden, code, message);
+
+    public static ValidationError Validation(String field, String message) => ValidationError.For(field, message);
 
     public static Error FromException(Exception exception)
     {
         Guard.AgainstNull(exception);
-        
-        var innerError = exception.InnerException != null 
-            ? FromException(exception.InnerException) 
-            : null;
 
         return new Error(
+            ErrorKind.Unexpected,
             exception.GetType().Name,
-            exception.Message,
-            innerError);
+            String.IsNullOrWhiteSpace(exception.Message) ? exception.GetType().Name : exception.Message)
+        {
+            Inner = exception.InnerException is null ? null : FromException(exception.InnerException)
+        };
     }
 
-    public Error WithContext(String code, String message)
-    {
-        Guard.AgainstNullOrWhiteSpace(code);
-        Guard.AgainstNullOrWhiteSpace(message);
-        return new Error(code, message, this);
-    }
-    
-    public static Error Validation(String message)
-    {
-        Guard.AgainstNullOrWhiteSpace(message);
-        return new Error("VALIDATION", message);
-    }
-    
-    public static readonly Error Unknown =
-        new Error("UNKNOWN", "Unexpected error");
+    public Error WithContext(String code, String message) => new(Kind, code, message) { Inner = this };
 
-    public String GetFullMessage() => InnerError is null 
-        ? Message 
-        : $"{Message} -> {InnerError.GetFullMessage()}";
+    public Error WithMetadata(String key, Object? value)
+    {
+        Guard.AgainstNull(key);
+
+        var metadata = Metadata is null
+            ? new Dictionary<String, Object?>(1)
+            : new Dictionary<String, Object?>(Metadata);
+        metadata[key] = value;
+
+        return this with { Metadata = metadata };
+    }
+
+    public String GetFullMessage() => Inner is null
+        ? Message
+        : $"{Message} -> {Inner.GetFullMessage()}";
 
     public IEnumerable<String> GetAllCodes()
     {
-        yield return Code;
-        
-        if (InnerError != null)
+        for (var error = this; error is not null; error = error.Inner)
         {
-            foreach (var code in InnerError.GetAllCodes())
-            {
-                yield return code;
-            }
+            yield return error.Code;
         }
     }
 
-    public Boolean Equals(Error? other)
+    public virtual Boolean Equals(Error? other)
     {
-        if (other is null)
-        {
-            return false;
-        }
-
         if (ReferenceEquals(this, other))
         {
             return true;
         }
 
-        return String.Equals(Code, other.Code, StringComparison.Ordinal) &&
-               String.Equals(Message, other.Message, StringComparison.Ordinal) &&
-               Equals(InnerError, other.InnerError);
+        return other is not null
+            && EqualityContract == other.EqualityContract
+            && Kind == other.Kind
+            && String.Equals(Code, other.Code, StringComparison.Ordinal)
+            && String.Equals(Message, other.Message, StringComparison.Ordinal)
+            && Equals(Inner, other.Inner)
+            && MetadataEquals(Metadata, other.Metadata);
     }
 
-    public override Boolean Equals(Object? obj) => obj is Error other && Equals(other);
+    public override Int32 GetHashCode()
+    {
+        var hash = new HashCode();
+        hash.Add(EqualityContract);
+        hash.Add(Kind);
+        hash.Add(Code, StringComparer.Ordinal);
+        hash.Add(Message, StringComparer.Ordinal);
+        hash.Add(Inner);
+        hash.Add(Metadata?.Count ?? 0);
+        return hash.ToHashCode();
+    }
 
-    public override Int32 GetHashCode() => HashCode.Combine(Code, Message, InnerError);
+    public sealed override String ToString() => Inner is null
+        ? $"[{Code}] {Message}"
+        : $"[{Code}] {Message} -> {Inner}";
 
-    public override String ToString() =>
-        InnerError == null 
-            ? $"[{Code}] {Message}"
-            : $"[{Code}] {Message} -> {InnerError}";
+    private static Boolean MetadataEquals(IReadOnlyDictionary<String, Object?>? left, IReadOnlyDictionary<String, Object?>? right)
+    {
+        var leftCount = left?.Count ?? 0;
+        var rightCount = right?.Count ?? 0;
+        if (leftCount != rightCount)
+        {
+            return false;
+        }
 
-    public static Boolean operator ==(Error? left, Error? right) => Equals(left, right);
+        if (leftCount == 0)
+        {
+            return true;
+        }
 
-    public static Boolean operator !=(Error? left, Error? right) => !Equals(left, right);
+        foreach (var (key, value) in left!)
+        {
+            if (!right!.TryGetValue(key, out var otherValue) || !Equals(value, otherValue))
+            {
+                return false;
+            }
+        }
 
-    public static implicit operator Error(String message) => Create("GENERAL", message);
+        return true;
+    }
 }

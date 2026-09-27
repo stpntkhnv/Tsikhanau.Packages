@@ -2,11 +2,10 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    public static Result<TData, TError> TapError<TData, TError>(
-        this Result<TData, TError> result,
-        Action<TError> action)
-        where TData : notnull
-        where TError : notnull
+    public static Result<T> TapError<T>(
+        this Result<T> result,
+        Action<Error> action)
+        where T : notnull
     {
         if (result.IsFailure)
         {

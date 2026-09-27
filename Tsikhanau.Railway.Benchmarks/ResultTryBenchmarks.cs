@@ -30,5 +30,5 @@ public class ResultTryBenchmarks
     }
 
     [Benchmark]
-    public Result<Int32, Error> Try() => ResultExtensions.Try(_func);
+    public Result<Int32> Try() => Result.Try(_func);
 }

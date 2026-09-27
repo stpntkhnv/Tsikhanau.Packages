@@ -8,6 +8,7 @@ public static partial class OptionalExtensions
     public static Optional<T> Where<T>(
         this Optional<T> optional,
         Func<T, Boolean> predicate)
+        where T : notnull
     {
         return optional.HasValue && predicate(optional.Value)
             ? optional

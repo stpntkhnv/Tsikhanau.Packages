@@ -2,8 +2,8 @@ namespace Tsikhanau.Railway.Tests;
 
 public class ResultZipTests
 {
-    private static readonly Error FirstError = Error.Create("FIRST", "first failed");
-    private static readonly Error SecondError = Error.Create("SECOND", "second failed");
+    private static readonly Error FirstError = Error.Failure("first.failed", "First failed");
+    private static readonly Error SecondError = Error.NotFound("second.missing", "Second missing");
 
     [Fact]
     public void Zip_BothSuccess_ReturnsTupleOfValues()

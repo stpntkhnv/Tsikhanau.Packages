@@ -5,13 +5,12 @@ namespace Tsikhanau.Railway;
 public static class ResultConversions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Optional<TData> ToOptional<TData, TError>(
-        this Result<TData, TError> result)
-        where TData : notnull
-        where TError : notnull
+    public static Optional<T> ToOptional<T>(
+        this Result<T> result)
+        where T : notnull
     {
         return result.IsSuccess
-            ? Optional<TData>.Some(result.Value)
-            : Optional<TData>.None();
+            ? Optional<T>.Some(result.Value)
+            : Optional<T>.None();
     }
 }

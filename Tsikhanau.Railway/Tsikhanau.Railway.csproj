@@ -16,7 +16,6 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <NoWarn>$(NoWarn);RS0027</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

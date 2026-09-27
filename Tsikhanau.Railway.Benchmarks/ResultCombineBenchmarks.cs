@@ -5,9 +5,9 @@ namespace Tsikhanau.Railway.Benchmarks;
 [MemoryDiagnoser]
 public class ResultCombineBenchmarks
 {
-    private static readonly Error ItemFailed = Error.Create("ITEM_FAILED", "Item failed");
+    private static readonly Error ItemFailed = Error.Failure("ITEM_FAILED", "Item failed");
 
-    private Result<Int32, Error>[] _results = [];
+    private Result<Int32>[] _results = [];
     private Int32[] _values = [];
     private Boolean[] _failed = [];
 
@@ -49,11 +49,11 @@ public class ResultCombineBenchmarks
 
     [Benchmark]
     public Int32 Combine() =>
-        ResultExtensions.Combine(_results)
+        Result.Combine(_results)
             .Match(static values => values.Sum(), static _ => -1);
 
     [Benchmark]
     public Int32 CombineAll() =>
-        ResultExtensions.CombineAll(_results)
-            .Match(static values => values.Sum(), static errors => -errors.Count);
+        Result.CombineAll(_results)
+            .Match(static values => values.Sum(), static _ => -1);
 }

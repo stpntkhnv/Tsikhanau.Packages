@@ -5,26 +5,24 @@ namespace Tsikhanau.Railway;
 public static class OptionalConversions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<T, TError> ToResult<T, TError>(
+    public static Result<T> ToResult<T>(
         this Optional<T> optional,
-        TError error)
+        Error error)
         where T : notnull
-        where TError : notnull
     {
         return optional.HasValue
-            ? Result<T, TError>.Success(optional.Value)
-            : Result<T, TError>.Failure(error);
+            ? Result<T>.Success(optional.Value)
+            : Result<T>.Failure(error);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<T, TError> ToResult<T, TError>(
+    public static Result<T> ToResult<T>(
         this Optional<T> optional,
-        Func<TError> errorFactory)
+        Func<Error> errorFactory)
         where T : notnull
-        where TError : notnull
     {
         return optional.HasValue
-            ? Result<T, TError>.Success(optional.Value)
-            : Result<T, TError>.Failure(errorFactory());
+            ? Result<T>.Success(optional.Value)
+            : Result<T>.Failure(errorFactory());
     }
 }

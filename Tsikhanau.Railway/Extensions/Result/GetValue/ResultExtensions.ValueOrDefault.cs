@@ -2,19 +2,25 @@ namespace Tsikhanau.Railway;
 
 public static partial class ResultExtensions
 {
-    public static TData GetValueOrDefault<TData, TError>(
-        this Result<TData, TError> result,
-        TData defaultValue = default!)
-        where TData : notnull
-        where TError : notnull
-        =>
-        result.IsSuccess ? result.Value : defaultValue;
+    public static T? GetValueOrDefault<T>(this Result<T> result)
+        where T : notnull
+    {
+        return result.IsSuccess ? result.Value : default;
+    }
 
-    public static TData GetValueOrDefault<TData, TError>(
-        this Result<TData, TError> result,
-        Func<TData> defaultValueFactory)
-        where TData : notnull
-        where TError : notnull
-        =>
-        result.IsSuccess ? result.Value : defaultValueFactory();
+    public static T GetValueOrDefault<T>(
+        this Result<T> result,
+        T defaultValue)
+        where T : notnull
+    {
+        return result.IsSuccess ? result.Value : defaultValue;
+    }
+
+    public static T GetValueOrDefault<T>(
+        this Result<T> result,
+        Func<T> defaultValueFactory)
+        where T : notnull
+    {
+        return result.IsSuccess ? result.Value : defaultValueFactory();
+    }
 }

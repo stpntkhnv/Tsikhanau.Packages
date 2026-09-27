@@ -1,26 +1,12 @@
 namespace Tsikhanau.Railway;
 
-public static class Result
+public static partial class Result
 {
-    public static Result<TData, Error> Success<TData>(TData data) where TData : notnull
-        => Result<TData, Error>.Success(data);
+    public static Result<T> Success<T>(T value) where T : notnull => Result<T>.Success(value);
 
-    public static Result<Unit, Error> Success()
-        => Result<Unit, Error>.Success(Unit.Value);
+    public static Result<Unit> Success() => Result<Unit>.Success(Unit.Value);
 
-    public static Result<TData, Error> Failure<TData>(Error error) where TData : notnull
-        => Result<TData, Error>.Failure(error);
+    public static Result<T> Failure<T>(Error error) where T : notnull => Result<T>.Failure(error);
 
-    public static Result<Unit, Error> Failure()
-        => Result<Unit, Error>.Failure(Error.Unknown);
-
-    public static Result<TData, Error> ToResult<TData>(this TData data, Func<TData, Boolean> defineSuccess) where TData : notnull
-    {
-        if (defineSuccess(data))
-        {
-            return Result<TData, Error>.Success(data);
-        }
-
-        return Result<TData, Error>.Failure(Error.Unknown);
-    }
+    public static Result<Unit> Failure(Error error) => Result<Unit>.Failure(error);
 }

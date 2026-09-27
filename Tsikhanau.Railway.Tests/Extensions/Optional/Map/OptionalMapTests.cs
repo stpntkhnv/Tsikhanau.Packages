@@ -16,11 +16,13 @@ public class OptionalMapTests
     }
 
     [Fact]
-    public void Map_Some_MapperReturnsNull_ThrowsArgumentNullException()
+    public void Map_Some_MapperReturnsNull_ReturnsNone()
     {
-        var optional = Optional<Int32>.Some(2);
+        Func<Int32, String> mapper = _ => null!;
 
-        Should.Throw<ArgumentNullException>(() => optional.Map(_ => (String?)null));
+        var result = Optional<Int32>.Some(2).Map(mapper);
+
+        result.IsNone.ShouldBeTrue();
     }
 
     [Fact]
@@ -47,11 +49,13 @@ public class OptionalMapTests
     }
 
     [Fact]
-    public async Task MapAsync_TaskWithSyncMapper_MapperReturnsNull_ThrowsArgumentNullException()
+    public async Task MapAsync_TaskWithSyncMapper_MapperReturnsNull_ReturnsNone()
     {
-        var optionalTask = Task.FromResult(Optional<Int32>.Some(2));
+        Func<Int32, String> mapper = _ => null!;
 
-        await Should.ThrowAsync<ArgumentNullException>(() => optionalTask.MapAsync(_ => (String?)null));
+        var result = await Task.FromResult(Optional<Int32>.Some(2)).MapAsync(mapper);
+
+        result.IsNone.ShouldBeTrue();
     }
 
     [Fact]
@@ -78,11 +82,13 @@ public class OptionalMapTests
     }
 
     [Fact]
-    public async Task MapAsync_TaskWithAsyncMapper_MapperReturnsNull_ThrowsArgumentNullException()
+    public async Task MapAsync_TaskWithAsyncMapper_MapperReturnsNull_ReturnsNone()
     {
-        var optionalTask = Task.FromResult(Optional<Int32>.Some(2));
+        Func<Int32, Task<String>> mapper = _ => Task.FromResult<String>(null!);
 
-        await Should.ThrowAsync<ArgumentNullException>(() => optionalTask.MapAsync(_ => Task.FromResult<String?>(null)));
+        var result = await Task.FromResult(Optional<Int32>.Some(2)).MapAsync(mapper);
+
+        result.IsNone.ShouldBeTrue();
     }
 
     [Fact]
@@ -109,11 +115,13 @@ public class OptionalMapTests
     }
 
     [Fact]
-    public async Task MapAsync_OptionalWithAsyncMapper_MapperReturnsNull_ThrowsArgumentNullException()
+    public async Task MapAsync_OptionalWithAsyncMapper_MapperReturnsNull_ReturnsNone()
     {
-        var optional = Optional<Int32>.Some(2);
+        Func<Int32, Task<String>> mapper = _ => Task.FromResult<String>(null!);
 
-        await Should.ThrowAsync<ArgumentNullException>(() => optional.MapAsync(_ => Task.FromResult<String?>(null)));
+        var result = await Optional<Int32>.Some(2).MapAsync(mapper);
+
+        result.IsNone.ShouldBeTrue();
     }
 
     [Fact]
@@ -125,5 +133,25 @@ public class OptionalMapTests
 
         result.IsNone.ShouldBeTrue();
         await mapper.DidNotReceiveWithAnyArgs().Invoke(default);
+    }
+
+    [Fact]
+    public void Map_Some_NullableMapperReturnsNull_ReturnsNone()
+    {
+        var names = new Dictionary<Int32, String> { [1] = "one" };
+
+        var result = Optional<Int32>.Some(2).Map(x => names.GetValueOrDefault(x));
+
+        result.IsNone.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Map_Some_NullableMapperReturnsValue_ReturnsSome()
+    {
+        var names = new Dictionary<Int32, String> { [1] = "one" };
+
+        var result = Optional<Int32>.Some(1).Map(x => names.GetValueOrDefault(x));
+
+        result.Value.ShouldBe("one");
     }
 }
