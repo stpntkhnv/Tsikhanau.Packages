@@ -16,11 +16,13 @@ public static partial class ResultExtensions
         where TError : notnull
     {
         var resultsList = results.ToList();
-        var failure = resultsList.FirstOrDefault(r => r.IsFailure);
 
-        if (failure.IsFailure)
+        foreach (var result in resultsList)
         {
-            return Result<IEnumerable<TData>, TError>.Failure(failure.Error);
+            if (result.IsFailure)
+            {
+                return Result<IEnumerable<TData>, TError>.Failure(result.Error);
+            }
         }
 
         var values = resultsList.Select(r => r.Value);
@@ -40,10 +42,14 @@ public static partial class ResultExtensions
         where TData : notnull
         where TError : notnull
     {
-        var failure = results.FirstOrDefault(r => r.IsFailure);
+        foreach (var result in results)
+        {
+            if (result.IsFailure)
+            {
+                return Result<Unit, TError>.Failure(result.Error);
+            }
+        }
 
-        return failure.IsFailure
-            ? Result<Unit, TError>.Failure(failure.Error)
-            : Result<Unit, TError>.Success(Unit.Value);
+        return Result<Unit, TError>.Success(Unit.Value);
     }
 }
