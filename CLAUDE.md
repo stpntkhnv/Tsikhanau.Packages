@@ -37,7 +37,7 @@ dotnet pack -c Release -o nugets
 
 - The public API of each package is tracked by PublicApiAnalyzers in its `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt`. A new or changed public member fails the build until the files are updated. Missing entries (RS0016) are added by `dotnet format analyzers <project>.csproj --diagnostics RS0016 --severity info`; stale entries (RS0017) are removed by hand.
 - Analyzer rules are tracked in `Tsikhanau.Railway.Analyzers/AnalyzerReleases.Unshipped.md` / `AnalyzerReleases.Shipped.md` (RS2008); a new or changed rule needs an entry there.
-- On release, move the Unshipped entries (public API and analyzer rules) into Shipped.
+- On release, move the Unshipped entries (public API and analyzer rules) into Shipped and add a section to `CHANGELOG.md` (linked from the packages as release notes).
 - CI (`.github/workflows/ci.yml`) builds and tests every push and PR. A tag `v<Version>` matching `<Version>` in Directory.Build.props packs both packages and publishes them to nuget.org through NuGet trusted publishing (no API key in the repo).
 
 ## Architecture Patterns
