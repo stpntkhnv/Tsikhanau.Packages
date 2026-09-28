@@ -4,17 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Structure
 
-This is a .NET 10.0 solution (Tsikhanau.Packages.slnx) with two NuGet packages for railway-oriented programming: the core library Tsikhanau.Railway and its ASP.NET Core integration Tsikhanau.Railway.AspNetCore.
+This is a .NET 10.0 solution (Tsikhanau.Packages.slnx) with two NuGet packages for railway-oriented programming: the core library Tsikhanau.Railway (with Roslyn analyzers packed inside) and its ASP.NET Core integration Tsikhanau.Railway.AspNetCore.
 
 - `Tsikhanau.Railway/Core/`: Result<T>, Optional<T>, Error (record) with ErrorKind, ValidationError, FieldError, AggregateError, Unit
 - `Tsikhanau.Railway/Extensions/`: extensions for Result and Optional (Bind, Map, Tap, Match, ...), conversions between them, and the static `Result` aggregation/Try helpers (Combine, CombineAll, FirstSuccess, Try)
 - `Tsikhanau.Railway/Internal/`: Guard (internal, argument checks)
 - `Tsikhanau.Railway.AspNetCore/`: `ToHttpResult` / `ToHttpResultAsync` for Result<T> and Error (ProblemDetails, ErrorKind to status code); works in Minimal APIs and controllers
+- `Tsikhanau.Railway.Analyzers/`: Roslyn analyzers (netstandard2.0, Microsoft.CodeAnalysis.CSharp 5.0.0): TR0001 ignored Result, TR0002 Map whose mapper returns a Result, TR0003 Value/Error read without an IsSuccess/IsFailure check (flow analysis over the control flow graph in `ResultFlowAnalysis`)
+- `Tsikhanau.Railway.Analyzers.CodeFixes/`: code fix TR0002 Map -> Bind (separate assembly because it needs Workspaces)
 - `Tsikhanau.Railway.Tests/`: xUnit v3 (Microsoft Testing Platform), Shouldly, NSubstitute; folders mirror the library
 - `Tsikhanau.Railway.AspNetCore.Tests/`: end-to-end tests through TestServer, including an MVC controller
+- `Tsikhanau.Railway.Analyzers.Tests/`: Microsoft.CodeAnalysis.Testing with `{|TR0001:...|}` markup; net10.0 reference assemblies are downloaded from nuget.org on the first run
 - `Tsikhanau.Railway.Benchmarks/`: BenchmarkDotNet with MemoryDiagnoser, one plain-code baseline per class
 
-All public types of both packages live in the single namespace `Tsikhanau.Railway`.
+All public types of both packages live in the single namespace `Tsikhanau.Railway` (analyzer types live in `Tsikhanau.Railway.Analyzers` and are not part of the library API).
+
+Both analyzer DLLs are packed into Tsikhanau.Railway under `analyzers/dotnet/cs`. The core and AspNetCore projects run the analyzers on their own code. AspNetCore references the core with `PrivateAssets="none"` so the analyzers reach users who install only Tsikhanau.Railway.AspNetCore.
 
 Shared build settings and package metadata (including the common `<Version>` of both packages) are in `Directory.Build.props`; package versions are managed centrally in `Directory.Packages.props` (PackageReference without Version).
 
@@ -31,7 +36,8 @@ dotnet pack -c Release -o nugets
 ## Public API and Release
 
 - The public API of each package is tracked by PublicApiAnalyzers in its `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt`. A new or changed public member fails the build until the files are updated. Missing entries (RS0016) are added by `dotnet format analyzers <project>.csproj --diagnostics RS0016 --severity info`; stale entries (RS0017) are removed by hand.
-- On release, move the Unshipped entries into Shipped.
+- Analyzer rules are tracked in `Tsikhanau.Railway.Analyzers/AnalyzerReleases.Unshipped.md` / `AnalyzerReleases.Shipped.md` (RS2008); a new or changed rule needs an entry there.
+- On release, move the Unshipped entries (public API and analyzer rules) into Shipped.
 - CI (`.github/workflows/ci.yml`) builds and tests every push and PR. A tag `v<Version>` matching `<Version>` in Directory.Build.props packs both packages and publishes them to nuget.org through NuGet trusted publishing (no API key in the repo).
 
 ## Architecture Patterns

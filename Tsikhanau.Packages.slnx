@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="Tsikhanau.Railway.Analyzers.CodeFixes/Tsikhanau.Railway.Analyzers.CodeFixes.csproj" />
+  <Project Path="Tsikhanau.Railway.Analyzers.Tests/Tsikhanau.Railway.Analyzers.Tests.csproj" />
+  <Project Path="Tsikhanau.Railway.Analyzers/Tsikhanau.Railway.Analyzers.csproj" />
   <Project Path="Tsikhanau.Railway.AspNetCore.Tests/Tsikhanau.Railway.AspNetCore.Tests.csproj" />
   <Project Path="Tsikhanau.Railway.AspNetCore/Tsikhanau.Railway.AspNetCore.csproj" />
   <Project Path="Tsikhanau.Railway.Benchmarks/Tsikhanau.Railway.Benchmarks.csproj" />

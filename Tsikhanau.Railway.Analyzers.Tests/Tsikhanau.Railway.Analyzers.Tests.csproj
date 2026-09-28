@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="xunit.v3.mtp-v2" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Tsikhanau.Railway\Tsikhanau.Railway.csproj" />
+        <ProjectReference Include="..\Tsikhanau.Railway.Analyzers\Tsikhanau.Railway.Analyzers.csproj" />
+        <ProjectReference Include="..\Tsikhanau.Railway.Analyzers.CodeFixes\Tsikhanau.Railway.Analyzers.CodeFixes.csproj" />
+    </ItemGroup>
+
+</Project>

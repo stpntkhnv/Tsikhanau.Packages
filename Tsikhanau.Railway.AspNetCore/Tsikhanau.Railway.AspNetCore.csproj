@@ -21,7 +21,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Tsikhanau.Railway\Tsikhanau.Railway.csproj" />
+        <ProjectReference Include="..\Tsikhanau.Railway\Tsikhanau.Railway.csproj" PrivateAssets="none" />
+        <ProjectReference Include="..\Tsikhanau.Railway.Analyzers\Tsikhanau.Railway.Analyzers.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

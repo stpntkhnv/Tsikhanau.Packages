@@ -17,6 +17,7 @@ Result and Optional types for railway-oriented programming in .NET: functional e
 - **Where**, **Or**, **OrElse** - filter and fallback for Optional
 - **ToResult**, **ToOptional** - conversions between Result and Optional
 - Async variants for all operations
+- Roslyn analyzers for ignored results, Map instead of Bind, and unchecked Value/Error access
 - ASP.NET Core integration (ProblemDetails, status codes by ErrorKind) in [Tsikhanau.Railway.AspNetCore](https://www.nuget.org/packages/Tsikhanau.Railway.AspNetCore)
 
 ## Installation
@@ -60,6 +61,23 @@ var message = await GetUser(id)
 var validated = Result.CombineAll(
     ValidateEmail(request.Email),
     ValidateName(request.Name));
+```
+
+## Analyzers
+
+The package ships Roslyn analyzers. All rules are warnings by default, so with `TreatWarningsAsErrors` they fail the build.
+
+| Rule | What it finds |
+|------|---------------|
+| TR0001 | A `Result` (or a `Task` of one) that is not used, so its error is lost. Discard it with `_ =` when that is intended. `Tap`/`TapError` on a result stored in a variable is fine. |
+| TR0002 | `Map`/`MapAsync` with a mapper that returns a `Result`, which produces `Result<Result<T>>`. Use `Bind`/`BindAsync`; a code fix does the replacement. |
+| TR0003 | `Value` read without checking `IsSuccess`, or `Error` without checking `IsFailure`. Follows `if`, early `return`/`throw`, `?:`, `&&`/`\|\|`, patterns, loops and assertions marked with `[DoesNotReturnIf]` (`Debug.Assert`, xUnit `Assert.True`, Shouldly `ShouldBeTrue`). |
+
+Severity is set per rule in `.editorconfig`, for example to turn TR0003 off in tests:
+
+```ini
+[tests/**.cs]
+dotnet_diagnostic.TR0003.severity = none
 ```
 
 ## License
