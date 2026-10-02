@@ -55,6 +55,7 @@ Fluent extension methods for chaining operations on Result and Optional:
 - `Where()` - Filter Optional values
 - `Or()` / `OrElse()` - Fallback for Optional
 - `Result.Combine()` (first error wins) / `Result.CombineAll()` (all errors merged)
+- `Result.Collect().And()...Map()/Bind()` - collect up to eight results of different types, all errors merged
 - Cross-type conversions: `ToResult()`, `ToOptional()`
 
 Each operation has async variants over `Task`: Task source with a sync func, Task source with an async func, and a plain source with an async func.

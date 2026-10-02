@@ -12,6 +12,7 @@ Result and Optional types for railway-oriented programming in .NET: functional e
 - **Ensure** - conditional checks with a fixed error or an error built from the value
 - **Tap**, **TapError** - side effects
 - **Result.Combine**, **Result.CombineAll**, **Result.FirstSuccess**, **Zip** - work with several results
+- **Result.Collect** - collect up to eight results of different types and map or bind them together
 - **Result.Try** - turn exceptions into errors
 - **Match**, **GetValueOrDefault** - get the value out
 - **Where**, **Or**, **OrElse** - filter and fallback for Optional
@@ -61,6 +62,16 @@ var message = await GetUser(id)
 var validated = Result.CombineAll(
     ValidateEmail(request.Email),
     ValidateName(request.Name));
+```
+
+`Collect` gathers results of different types and hands every value to `Map` or `Bind` by name. If any result failed, the function is not called and the errors are merged the way `CombineAll` merges them.
+
+```csharp
+var food = Result
+    .Collect(FoodName.Create(command.Name, "name"))
+    .And(Kcal.Create(command.Kcal, "kcal"))
+    .And(Grams.Create(command.Portion, "portion"))
+    .Map((name, kcal, portion) => Food.Create(id, name, kcal, portion, now));
 ```
 
 ## Analyzers

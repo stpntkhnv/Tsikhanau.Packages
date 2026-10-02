@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0 - Unreleased
+
+### Tsikhanau.Railway
+
+- `Result.Collect(...).And(...)` collects up to eight results of different types; `Map` and `Bind` get every value by name, or one error with all failures merged the way `CombineAll` merges them.
+
 ## 1.0.0 - 2026-09-28
 
 First release of Tsikhanau.Railway and Tsikhanau.Railway.AspNetCore. They replace Tsikhanau.Foundation, Tsikhanau.RailwayExtensions, Tsikhanau.Outcomes, Tsikhanau.Validation and Tsikhanau.Flow, which are deprecated.
