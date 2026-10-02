@@ -114,6 +114,28 @@ public class ResultCollectTests
         error.Errors.ShouldBe([NameError, MissingError]);
     }
 
+    [Theory]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    [InlineData(8)]
+    public void Map_EveryMemberFailsAtEveryArity_ReturnsAggregateErrorInCollectionOrder(Int32 arity)
+    {
+        var errors = Enumerable
+            .Range(0, arity)
+            .Select(static i => Error.Failure($"failed.{i}", $"Position {i} failed"))
+            .ToArray();
+        var results = errors.Select(static error => Result.Failure<Int32>(error)).ToArray();
+
+        var result = CollectAndJoin(results);
+
+        var error = result.Error.ShouldBeOfType<AggregateError>();
+        error.Errors.ShouldBe(errors);
+    }
+
     [Fact]
     public void Map_SingleFailure_ReturnsTheSameInstance()
     {
