@@ -27,7 +27,7 @@ public static partial class Result
 
         return errors is null
             ? Result<IReadOnlyList<T>>.Success(values)
-            : Result<IReadOnlyList<T>>.Failure(MergeErrors(errors));
+            : Result<IReadOnlyList<T>>.Failure(ErrorMerge.Merge(errors));
     }
 
     public static Result<IReadOnlyList<T>> CombineAll<T>(this IEnumerable<Result<T>> results)
@@ -51,21 +51,6 @@ public static partial class Result
 
         return errors is null
             ? Result<IReadOnlyList<T>>.Success(values)
-            : Result<IReadOnlyList<T>>.Failure(MergeErrors(errors));
-    }
-
-    private static Error MergeErrors(List<Error> errors)
-    {
-        if (errors.Count == 1)
-        {
-            return errors[0];
-        }
-
-        if (errors.TrueForAll(static e => e is ValidationError))
-        {
-            return ValidationError.From(errors.SelectMany(static e => ((ValidationError)e).FieldErrors));
-        }
-
-        return AggregateError.From(errors);
+            : Result<IReadOnlyList<T>>.Failure(ErrorMerge.Merge(errors));
     }
 }

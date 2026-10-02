@@ -22,4 +22,11 @@ internal static class Guard
             throw new ArgumentException("Value cannot be empty or whitespace.", paramName);
         return value;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AgainstUncollected(Boolean initialized)
+    {
+        if (!initialized)
+            throw new InvalidOperationException("Collected is not initialized. Start it with Result.Collect.");
+    }
 }
