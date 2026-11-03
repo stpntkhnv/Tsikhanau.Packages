@@ -17,7 +17,7 @@ This is a .NET 10.0 solution (Tsikhanau.Packages.slnx) with two NuGet packages f
 - `Tsikhanau.Railway.Analyzers.Tests/`: Microsoft.CodeAnalysis.Testing with `{|TR0001:...|}` markup; net10.0 reference assemblies are downloaded from nuget.org on the first run
 - `Tsikhanau.Railway.Benchmarks/`: BenchmarkDotNet with MemoryDiagnoser, one plain-code baseline per class
 
-All public types of both packages live in the single namespace `Tsikhanau.Railway` (analyzer types live in `Tsikhanau.Railway.Analyzers` and are not part of the library API).
+All public types of both packages live in the single namespace `Tsikhanau.Railway` (analyzer types live in `Tsikhanau.Railway.Analyzers.Rules`, `.ResultFlow` and `.Symbols`, the code fix in `Tsikhanau.Railway.Analyzers.CodeFixes`, and are not part of the library API).
 
 Both analyzer DLLs are packed into Tsikhanau.Railway under `analyzers/dotnet/cs`. The core and AspNetCore projects run the analyzers on their own code. AspNetCore references the core with `PrivateAssets="none"` so the analyzers reach users who install only Tsikhanau.Railway.AspNetCore.
 
