@@ -1,3 +1,5 @@
+using Tsikhanau.Railway.Analyzers.Rules;
+
 namespace Tsikhanau.Railway.Analyzers.Tests;
 
 public class ResultNotUsedAnalyzerTests
