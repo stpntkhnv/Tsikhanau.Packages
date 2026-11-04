@@ -29,6 +29,23 @@ public class ResultHttpExtensionsTests
     }
 
     [Fact]
+    public async Task ToHttpResult_FailureOfValidationKind_WritesValidationProblem()
+    {
+        var error = new Error(ErrorKind.Validation, "name.invalid", "Name is invalid");
+
+        var response = await HttpTestHost.GetAsync(() => Result.Failure<ItemDto>(error).ToHttpResult());
+
+        response.StatusCode.ShouldBe(400);
+        response
+            .Body
+            .ShouldNotBeNull()
+            .GetProperty("errors")
+            .GetProperty("")[0]
+            .GetString()
+            .ShouldBe("Name is invalid");
+    }
+
+    [Fact]
     public async Task ToHttpResult_UnitSuccess_WritesNoContent()
     {
         var response = await HttpTestHost.GetAsync(() => Result.Success().ToHttpResult());

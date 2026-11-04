@@ -1,5 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Tsikhanau.Railway.AspNetCore.Tests;
 
@@ -174,6 +176,153 @@ public class ErrorHttpExtensionsTests
     public void ToHttpResult_NullError_ThrowsArgumentNullException()
     {
         Should.Throw<ArgumentNullException>(() => ((Error)null!).ToHttpResult());
+    }
+
+    [Fact]
+    public async Task ToHttpResult_ValidationKindWithoutFields_WritesMessageUnderEmptyKey()
+    {
+        var error = new Error(ErrorKind.Validation, "name.invalid", "Name is invalid");
+        const String expectedBody = """
+            {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"":["Name is invalid"]},"code":"name.invalid","traceId":"*"}
+            """;
+
+        var response = await HttpTestHost.GetAsync(() => error.ToHttpResult());
+        var body = ProblemBody.WithAnyTraceId(response);
+
+        response.StatusCode.ShouldBe(400);
+        body.ShouldBe(expectedBody);
+    }
+
+    [Fact]
+    public async Task ToHttpResult_WrappedValidationError_WritesOuterMessageAndInnerFields()
+    {
+        var error = ValidationError
+            .From([new FieldError("email", "Invalid")])
+            .WithContext("signup.invalid", "Signup is invalid");
+
+        const String expectedBody = """
+            {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"":["Signup is invalid"],"email":["Invalid"]},"code":"signup.invalid","traceId":"*"}
+            """;
+
+        var response = await HttpTestHost.GetAsync(() => error.ToHttpResult());
+        var body = ProblemBody.WithAnyTraceId(response);
+
+        response.StatusCode.ShouldBe(400);
+        body.ShouldBe(expectedBody);
+    }
+
+    [Fact]
+    public async Task ToHttpResult_AggregateOfValidationErrors_WritesTheirFields()
+    {
+        var error = AggregateError.From([Error.Validation("email", "Invalid"), Error.Validation("name", "Required")]);
+        const String expectedBody = """
+            {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"email":["Invalid"],"name":["Required"]},"code":"aggregate","traceId":"*"}
+            """;
+
+        var response = await HttpTestHost.GetAsync(() => error.ToHttpResult());
+        var body = ProblemBody.WithAnyTraceId(response);
+
+        response.StatusCode.ShouldBe(400);
+        body.ShouldBe(expectedBody);
+    }
+
+    [Fact]
+    public async Task ToHttpResult_ValidationWrappingUnexpected_KeepsTheUnexpectedMessageOut()
+    {
+        var error = new Error(ErrorKind.Validation, "order.invalid", "Order is invalid")
+        {
+            Inner = AggregateError.From(
+                [Error.Validation("email", "Invalid"), Error.Unexpected("db.down", "Database secret down")])
+        };
+
+        const String expectedBody = """
+            {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"":["Order is invalid"],"email":["Invalid"]},"code":"order.invalid","traceId":"*"}
+            """;
+
+        var response = await HttpTestHost.GetAsync(() => error.ToHttpResult());
+        var body = ProblemBody.WithAnyTraceId(response);
+
+        response.StatusCode.ShouldBe(400);
+        body.ShouldBe(expectedBody);
+    }
+
+    [Fact]
+    public void ToHttpResult_NotFound_ReturnsProblemHttpResult()
+    {
+        var error = Error.NotFound("item.not_found", "Item not found");
+
+        var result = error.ToHttpResult();
+
+        result.ShouldBeOfType<ProblemHttpResult>();
+        result
+            .ShouldBeAssignableTo<IStatusCodeHttpResult>()
+            .StatusCode
+            .ShouldBe(404);
+
+        result
+            .ShouldBeAssignableTo<IValueHttpResult>()
+            .Value
+            .ShouldBeOfType<ProblemDetails>()
+            .Detail
+            .ShouldBe("Item not found");
+    }
+
+    [Fact]
+    public void ToHttpResult_Unexpected_ReturnsProblemHttpResultWithoutDetail()
+    {
+        var error = Error.Unexpected("db.timeout", "Connection string host=secret timed out");
+
+        var result = error.ToHttpResult();
+
+        result.ShouldBeOfType<ProblemHttpResult>();
+        result
+            .ShouldBeAssignableTo<IStatusCodeHttpResult>()
+            .StatusCode
+            .ShouldBe(500);
+
+        result
+            .ShouldBeAssignableTo<IValueHttpResult>()
+            .Value
+            .ShouldBeOfType<ProblemDetails>()
+            .Detail
+            .ShouldBeNull();
+    }
+
+    [Fact]
+    public void ToHttpResult_ValidationError_ReturnsValidationProblem()
+    {
+        var error = Error.Validation("email", "Invalid");
+
+        var result = error.ToHttpResult();
+
+        result.ShouldBeOfType<ValidationProblem>();
+        result
+            .ShouldBeAssignableTo<IStatusCodeHttpResult>()
+            .StatusCode
+            .ShouldBe(400);
+
+        result
+            .ShouldBeAssignableTo<IValueHttpResult>()
+            .Value
+            .ShouldBeOfType<HttpValidationProblemDetails>()
+            .Errors["email"]
+            .ShouldBe(["Invalid"]);
+    }
+
+    [Fact]
+    public void ToHttpResult_ValidationKindWithoutFields_ReturnsValidationProblem()
+    {
+        var error = new Error(ErrorKind.Validation, "name.invalid", "Name is invalid");
+
+        var result = error.ToHttpResult();
+
+        result.ShouldBeOfType<ValidationProblem>();
+        result
+            .ShouldBeAssignableTo<IValueHttpResult>()
+            .Value
+            .ShouldBeOfType<HttpValidationProblemDetails>()
+            .Errors[""]
+            .ShouldBe(["Name is invalid"]);
     }
 
     private static String[] ReadStrings(JsonElement array) =>

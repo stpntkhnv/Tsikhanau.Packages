@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.2.0 - Unreleased
+
+### Tsikhanau.Railway
+
+- `AsOptional()` turns a nullable value into an `Optional<T>`, for value types and reference types alike. `AsNullable()` turns an `Optional<T>` of a value type back into `T?`, and `AsEnumerable()` reads an `Optional<T>` as a sequence of zero or one value.
+
+### Tsikhanau.Railway.AspNetCore
+
+- `error.ToProblem<TSuccess>()` gives the same answer as `ToHttpResult`, typed as `Results<TSuccess, ValidationProblem, ProblemHttpResult>` for Minimal API endpoints that declare their results.
+- `ErrorHttpExtensions.ExpectedKinds` lists the kinds that answer with their own status, and `error.IsExpected()` says whether an error answers that way or as a bare 500.
+- `ProblemMembers` names the body members of the answers: `code`, `errors` and `traceId`.
+- Changed: every error of kind `Validation` now answers `ValidationProblem`, not only a `ValidationError`. The answer is a 400 with the title "One or more validation errors occurred.", the messages in `errors` and no `detail`. The error's own message goes under the `""` key, and the field errors of a `ValidationError` reached through `Inner` or an `AggregateError` go under their fields. Before, such an error answered a 400 problem with the title "Bad Request" and its message in `detail`. The change reaches every method that turns a failure into a response:
+  - `Error.ToHttpResult()`
+  - `Result<T>.ToHttpResult()` and `Result<T>.ToHttpResult(onSuccess)`
+  - `Result<Unit>.ToHttpResult()`
+  - `Task<Result<T>>.ToHttpResultAsync()` and `Task<Result<T>>.ToHttpResultAsync(onSuccess)`
+  - `Task<Result<Unit>>.ToHttpResultAsync()`
+- The message of an unexpected error (kind `Unexpected`, or any kind outside `ExpectedKinds`) found through `Inner` or an `AggregateError` is never written to `errors`; the field errors it wraps still are.
+- `ToHttpResult` still returns the concrete `ValidationProblem` or `ProblemHttpResult`, as before.
+
 ## 1.1.0 - Unreleased
 
 ### Tsikhanau.Railway

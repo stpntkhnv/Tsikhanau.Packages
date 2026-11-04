@@ -73,4 +73,44 @@ public class OptionalConversionsTests
 
         Should.Throw<ArgumentNullException>(() => optional.ToResult(() => null!));
     }
+
+    [Fact]
+    public void AsNullable_Some_ReturnsValue()
+    {
+        var optional = Optional<Int32>.Some(5);
+
+        var value = optional.AsNullable();
+
+        value.ShouldBe(5);
+    }
+
+    [Fact]
+    public void AsNullable_None_ReturnsNull()
+    {
+        var optional = Optional<Int32>.None();
+
+        var value = optional.AsNullable();
+
+        value.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AsEnumerable_Some_ReturnsTheValue()
+    {
+        var optional = Optional<String>.Some("a");
+
+        var sequence = optional.AsEnumerable();
+
+        sequence.ShouldBe(["a"]);
+    }
+
+    [Fact]
+    public void AsEnumerable_None_ReturnsEmpty()
+    {
+        var optional = Optional<String>.None();
+
+        var sequence = optional.AsEnumerable();
+
+        sequence.ShouldBeEmpty();
+    }
 }
