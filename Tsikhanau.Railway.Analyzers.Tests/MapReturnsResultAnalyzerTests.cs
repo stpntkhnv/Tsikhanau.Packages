@@ -1,3 +1,5 @@
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Testing;
 using Tsikhanau.Railway.Analyzers.CodeFixes;
 using Tsikhanau.Railway.Analyzers.Rules;
 
@@ -15,8 +17,13 @@ public class MapReturnsResultAnalyzerTests
 
         """;
 
-    private static Task VerifyAsync(String source) =>
-        Verifier.AnalyzeAsync<MapReturnsResultAnalyzer>(Service + source);
+    private static Task VerifyAsync(String source, params DiagnosticResult[] expected) =>
+        Verifier.AnalyzeAsync<MapReturnsResultAnalyzer>(Service + source, expected);
+
+    private static DiagnosticResult Warning(Int32 location, String message) =>
+        new DiagnosticResult("TR0002", DiagnosticSeverity.Warning)
+            .WithLocation(location)
+            .WithMessage(message);
 
     private static Task FixAsync(String source, String fixedSource) => FixAsync(String.Empty, source, fixedSource);
 
@@ -24,6 +31,12 @@ public class MapReturnsResultAnalyzerTests
         Verifier.FixAsync<MapReturnsResultAnalyzer, MapToBindCodeFixProvider>(
             header + Service + source,
             header + Service + fixedSource);
+
+    private static Task FixWithTitleAsync(String title, String source, String fixedSource) =>
+        Verifier.FixAsync<MapReturnsResultAnalyzer, MapToBindCodeFixProvider>(
+            Service + source,
+            Service + fixedSource,
+            title);
 
     [Fact]
     public Task Map_MapperReturnsResult_Reports() => VerifyAsync("""
@@ -77,7 +90,25 @@ public class MapReturnsResultAnalyzerTests
         """);
 
     [Fact]
-    public Task Fix_Map_ReplacesWithBind() => FixAsync("""
+    public Task MapAndMapAsync_ReportMessageAndSpan() => VerifyAsync(
+        """
+        public class Caller
+        {
+            public async Task Run(Result<Int32> result, Task<Result<Int32>> pending)
+            {
+                _ = result.{|#0:Map|}(Users.Find);
+                _ = await pending.{|#1:MapAsync|}(id => Users.FindAsync(id));
+            }
+        }
+        """,
+        Warning(0, "Use 'Bind' instead of 'Map': the mapper returns a Result, so 'Map' produces a nested Result"),
+        Warning(
+            1,
+            "Use 'BindAsync' instead of 'MapAsync': the mapper returns a Result, "
+            + "so 'MapAsync' produces a nested Result"));
+
+    [Fact]
+    public Task Fix_Map_ReplacesWithBind() => FixWithTitleAsync("Replace 'Map' with 'Bind'", """
         public class Caller
         {
             public void Run(Result<Int32> result)
@@ -96,7 +127,7 @@ public class MapReturnsResultAnalyzerTests
         """);
 
     [Fact]
-    public Task Fix_MapAsync_ReplacesWithBindAsync() => FixAsync("""
+    public Task Fix_MapAsync_ReplacesWithBindAsync() => FixWithTitleAsync("Replace 'MapAsync' with 'BindAsync'", """
         public class Caller
         {
             public async Task Run(Task<Result<Int32>> pending)

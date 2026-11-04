@@ -1,3 +1,5 @@
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Testing;
 using Tsikhanau.Railway.Analyzers.Rules;
 
 namespace Tsikhanau.Railway.Analyzers.Tests;
@@ -31,8 +33,17 @@ public class UncheckedResultAccessAnalyzerTests
 
         """;
 
-    private static Task VerifyAsync(String source) =>
-        Verifier.AnalyzeAsync<UncheckedResultAccessAnalyzer>(Helpers + source);
+    private const String UncheckedValue = "Result.Value is accessed without checking Result.IsSuccess first";
+
+    private const String UncheckedError = "Result.Error is accessed without checking Result.IsFailure first";
+
+    private static Task VerifyAsync(String source, params DiagnosticResult[] expected) =>
+        Verifier.AnalyzeAsync<UncheckedResultAccessAnalyzer>(Helpers + source, expected);
+
+    private static DiagnosticResult Warning(Int32 location, String message) =>
+        new DiagnosticResult("TR0003", DiagnosticSeverity.Warning)
+            .WithLocation(location)
+            .WithMessage(message);
 
     [Fact]
     public Task ValueWithoutCheck_Reports() => VerifyAsync("""
@@ -102,6 +113,27 @@ public class UncheckedResultAccessAnalyzerTests
             }
         }
         """);
+
+    [Fact]
+    public Task WrongBranch_ReportsMessageAndSpan() => VerifyAsync(
+        """
+        public class Caller
+        {
+            public void Run(Result<Int32> result)
+            {
+                if (result.IsSuccess)
+                {
+                    Users.Use({|#0:result.Error|});
+                }
+                else
+                {
+                    Users.Use({|#1:result.Value|});
+                }
+            }
+        }
+        """,
+        Warning(0, UncheckedError),
+        Warning(1, UncheckedValue));
 
     [Fact]
     public Task EarlyReturn_DoesNotReport() => VerifyAsync("""
@@ -381,6 +413,46 @@ public class UncheckedResultAccessAnalyzerTests
         """);
 
     [Fact]
+    public Task Lambda_ReportsMessageAndSpan() => VerifyAsync(
+        """
+        public class Caller
+        {
+            public void Run(Result<Int32> result, List<Int32> items)
+            {
+                items.ForEach(item => Users.Use(item + {|#0:result.Value|}));
+                items.ForEach(item => items.ForEach(other => Users.Use({|#1:result.Error|})));
+            }
+        }
+        """,
+        Warning(0, UncheckedValue),
+        Warning(1, UncheckedError));
+
+    [Fact]
+    public Task LambdaAfterDoesNotReturn_DoesNotReport() => VerifyAsync("""
+        public class Caller
+        {
+            public void Run(Result<Int32> result)
+            {
+                if (result.IsFailure)
+                {
+                    Users.Fail(result.Error);
+                    Action read = () =>
+                    {
+                        try
+                        {
+                            Users.Use(0);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            Users.Use(result.Value);
+                        }
+                    };
+                }
+            }
+        }
+        """);
+
+    [Fact]
     public Task LambdaParameters_AreNotReported() => VerifyAsync("""
         public class Caller
         {
@@ -401,6 +473,25 @@ public class UncheckedResultAccessAnalyzerTests
             }
         }
         """);
+
+    [Fact]
+    public Task LocalFunction_ReportsMessageAndSpan() => VerifyAsync(
+        """
+        public class Caller
+        {
+            public Int32 Run(Result<Int32> result, List<Int32> items)
+            {
+                Each(result);
+                return result.IsSuccess ? Read(result) : 0;
+
+                static Int32 Read(Result<Int32> local) => {|#0:local.Value|};
+
+                void Each(Result<Int32> local) => items.ForEach(item => Users.Use({|#1:local.Error|}));
+            }
+        }
+        """,
+        Warning(0, UncheckedValue),
+        Warning(1, UncheckedError));
 
     [Fact]
     public Task CatchAndFinallyBlocks_AreAnalyzed() => VerifyAsync("""

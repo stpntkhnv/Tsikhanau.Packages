@@ -17,7 +17,7 @@ internal static class Verifier
 
         """;
 
-    public static Task AnalyzeAsync<TAnalyzer>(String source)
+    public static Task AnalyzeAsync<TAnalyzer>(String source, params DiagnosticResult[] expected)
         where TAnalyzer : DiagnosticAnalyzer, new()
     {
         var test = new CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
@@ -26,11 +26,29 @@ internal static class Verifier
             ReferenceAssemblies = ReferenceAssemblies.Net.Net100
         };
         test.TestState.AdditionalReferences.Add(typeof(Result<>).Assembly);
+        test.ExpectedDiagnostics.AddRange(expected);
 
         return test.RunAsync(TestContext.Current.CancellationToken);
     }
 
     public static Task FixAsync<TAnalyzer, TCodeFix>(String source, String fixedSource)
+        where TAnalyzer : DiagnosticAnalyzer, new()
+        where TCodeFix : CodeFixProvider, new() =>
+        CreateFixTest<TAnalyzer, TCodeFix>(source, fixedSource).RunAsync(TestContext.Current.CancellationToken);
+
+    public static Task FixAsync<TAnalyzer, TCodeFix>(String source, String fixedSource, String title)
+        where TAnalyzer : DiagnosticAnalyzer, new()
+        where TCodeFix : CodeFixProvider, new()
+    {
+        var test = CreateFixTest<TAnalyzer, TCodeFix>(source, fixedSource);
+        test.CodeActionVerifier = (action, verifier) => verifier.Equal(title, action.Title);
+
+        return test.RunAsync(TestContext.Current.CancellationToken);
+    }
+
+    private static CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier> CreateFixTest<TAnalyzer, TCodeFix>(
+        String source,
+        String fixedSource)
         where TAnalyzer : DiagnosticAnalyzer, new()
         where TCodeFix : CodeFixProvider, new()
     {
@@ -43,6 +61,6 @@ internal static class Verifier
         test.TestState.AdditionalReferences.Add(typeof(Result<>).Assembly);
         test.FixedState.AdditionalReferences.Add(typeof(Result<>).Assembly);
 
-        return test.RunAsync(TestContext.Current.CancellationToken);
+        return test;
     }
 }
